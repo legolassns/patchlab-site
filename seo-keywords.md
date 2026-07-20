@@ -17,15 +17,26 @@ Keyword indicative in italiano, da validare con uno strumento di ricerca (Search
 - Secondarie: toppe velcro su misura, patch removibili velcro, distintivi velcro militari, patch velcro forze dell'ordine
 - Intento: commerciale, spesso B2B/settore divise
 
-## Patch Woven (patch-woven.html)
+## Patch Woven HD (it/patch-woven/)
 - **Primaria**: patch woven personalizzate
-- Secondarie: toppe tessute su misura, patch woven alta definizione, etichette woven personalizzate
+- Secondarie: patch woven HD personalizzate, toppe tessute su misura, patch woven alta definizione, etichette woven personalizzate
 - Intento: commerciale, target moda/sportswear
+- Nota: "Woven HD" è denominazione editoriale (title/H1), la keyword storica resta "patch woven personalizzate"
 
 ## Patch PVC (patch-pvc.html)
 - **Primaria**: patch pvc personalizzate
 - Secondarie: toppe gomma pvc su misura, patch 3D pvc, distintivi pvc impermeabili, patch pvc outdoor
 - Intento: commerciale, target outdoor/tattico
+
+## Patch Sublimatiche (it/patch-sublimatiche/)
+- **Primaria**: patch sublimatiche personalizzate
+- Secondarie: patch sublimatiche piccole tirature, patch stampate a sublimazione, toppe sublimatiche personalizzate
+- Intento: commerciale, target eventi/sport/merchandising sensibile al costo
+
+## Patch Termosaldabili (it/patch-termosaldabili/)
+- **Primaria**: patch termosaldabili personalizzate
+- Secondarie: toppe termosaldabili personalizzate, patch termoadesive su misura, patch con retro termoadesivo
+- Intento: commerciale/informazionale — pagina guida sul sistema di applicazione, collega ricamate, woven HD e sublimatiche
 
 ## Portfolio (portfolio.html)
 - **Primaria**: portfolio patch personalizzate

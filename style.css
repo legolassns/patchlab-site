@@ -694,7 +694,8 @@ details[open] > .faq-question::after { transform: rotate(45deg); }
 .site-footer { background: var(--color-black); color: var(--color-on-dark-muted); }
 .footer-inner {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  /* 5 colonne: brand, Lavorazioni, Supporti, Metodo, Contatti (Sprint 10) */
+  grid-template-columns: 1.4fr 1fr 0.9fr 1fr 1fr;
   gap: var(--space-24);
   padding: var(--space-64) 0 var(--space-32);
 }

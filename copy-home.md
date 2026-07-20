@@ -5,7 +5,7 @@ Testi così come inseriti in `index.html`, raccolti qui per facilitare revisione
 ## Hero
 **H1**: Patch personalizzate per enti, associazioni e aziende
 
-Lead: Patch ricamate, velcro, woven e PVC realizzate con esperienza produttiva reale. Un progetto verticale Euroricami per chi cerca qualità, continuità e riordini affidabili.
+Lead: Patch ricamate, Woven HD, PVC e sublimatiche realizzate con esperienza produttiva reale. Un progetto verticale Euroricami per chi cerca qualità, continuità e riordini affidabili.
 
 CTA primaria: Richiedi un preventivo
 CTA secondaria: Scopri le lavorazioni
@@ -23,9 +23,11 @@ Immagine: foto reale con tre patch (Futsal Serie A, Polizia Locale Roma Capitale
 Lead: Ogni tecnica ha caratteristiche diverse in termini di resa, resistenza e costo di produzione. Ti aiutiamo a scegliere quella corretta in base all'uso previsto.
 
 - **Patch Ricamate** (foto reale: Guardia Svizzera Pontificia) — Effetto tridimensionale e alta percezione di qualità. Ideali per divise, uniformi e capi ufficiali.
-- **Patch Velcro** (placeholder, foto in attesa) — Aggancio removibile per divise intercambiabili. Diffuse in ambito militare e forze dell'ordine.
-- **Patch Woven** (foto reale: Italia Team / Scuola Calcio Affiliata) — Tessitura ad alta definizione per loghi con dettagli fini e formati ridotti.
+- **Patch Woven HD** (foto reale: Italia Team / Scuola Calcio Affiliata) — Tessitura ad alta definizione per loghi con dettagli fini, linee sottili e testi piccoli.
 - **Patch PVC** (foto reale: patch PVC a rilievo 3D) — Colori pieni, effetto 3D e resistenza ad acqua e usura intensa. Adatte all'outdoor.
+- **Patch Sublimatiche** (placeholder, foto in attesa) — Soluzione accessibile per piccole tirature, grafiche ricche di colori e sfumature.
+
+Richiamo supporti (sotto la griglia): Disponibili anche con retro velcro o termosaldabile, in base alla tecnologia e all'applicazione. (Link a patch-velcro/ e patch-termosaldabili/ — Sprint 10: Velcro è uscito dalla griglia tecnologie ed è presidiato da questo richiamo, dal footer "Supporti" e dalla sua pagina dedicata.)
 
 ## Per chi lavoriamo
 **H2**: Settori con esigenze tecniche specifiche

@@ -11,6 +11,8 @@ patch-personalizzate-euroricami/
 ├── patch-velcro.html     Scheda prodotto: patch velcro (in attesa di foto reale)
 ├── patch-woven.html      Scheda prodotto: patch woven (con foto reale)
 ├── patch-pvc.html        Scheda prodotto: patch PVC (con foto reale)
+├── patch-sublimatiche.html   Stub redirect → it/patch-sublimatiche/
+├── patch-termosaldabili.html Stub redirect → it/patch-termosaldabili/
 ├── portfolio.html        Galleria lavori: 4 foto reali + 2 placeholder per lavori futuri
 ├── preventivo.html       Modulo di richiesta preventivo
 ├── style.css             Foglio di stile unico per tutto il sito
@@ -31,7 +33,8 @@ patch-personalizzate-euroricami/
 
 - Header e footer sono ripetuti identici in ogni pagina HTML (nessun template engine: per modificarli va aggiornato ogni file).
 - Il logo è composto da due parti: "PatchLab" (classe `.logo`) e "by Euroricami" (classe `.logo-sub`), definite in `style.css`.
-- Non esiste ancora una foto reale di patch velcro: `patch-velcro.html` e la card corrispondente in home usano ancora `.image-placeholder`. Da sostituire quando sarà disponibile uno scatto dedicato.
+- Non esiste ancora una foto reale di patch velcro né di patch sublimatica: le pagine `it/patch-velcro/`, `it/patch-sublimatiche/`, `it/patch-termosaldabili/` e le card corrispondenti usano `.image-placeholder`. Da sostituire quando saranno disponibili scatti dedicati.
+- Dallo Sprint 10 la navigazione principale è: Patch Ricamate, Woven HD, Patch PVC, Sublimatiche, Portfolio, Come lavoriamo (+ CTA). Patch Velcro e Patch Termosaldabili sono raggiungibili dal footer (colonna "Supporti"), dalla home e dai link contestuali.
 - Le immagini reali vivono in `assets/img/` (non più `images/`): eventuali nuove foto vanno aggiunte lì, con nomi file SEO-friendly (es. `patch-<lavorazione>-<soggetto>.jpg`).
 - Il form in `preventivo.html` è solo lato client: valida i campi obbligatori e mostra un messaggio di conferma, ma **non invia ancora dati a nessun servizio**. Va collegato a un endpoint reale (form-to-email, CRM, backend interno) prima della pubblicazione.
 - Colori, spaziature e font sono definiti come variabili CSS in cima a `style.css` (`:root`): da lì si modifica la palette in un punto solo.

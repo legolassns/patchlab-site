@@ -8,28 +8,35 @@
 <link rel="canonical" href="https://patchlab.net/it/preventivo/">
 <link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/">
 <link rel="alternate" hreflang="x-default" href="https://patchlab.net/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PatchLab by Euroricami">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Richiedi un preventivo per patch personalizzate | PatchLab by Euroricami">
+<meta property="og:description" content="Compila il modulo con i dettagli del tuo progetto: tipologia di patch, quantità e tempistiche. Ti rispondiamo con una valutazione tecnica.">
+<meta property="og:url" content="https://patchlab.net/it/preventivo/">
+<meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/it/" class="logo">PatchLab <span class="logo-sub">by Euroricami</span></a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Apri menu" aria-expanded="false">
+    <a href="../" class="logo">PatchLab <span class="logo-sub">by Euroricami</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Apri menu" aria-expanded="false" aria-controls="nav-panel">
       <span></span><span></span><span></span>
     </button>
     <div class="nav-panel" id="nav-panel">
       <nav class="main-nav">
         <ul>
-          <li><a href="/it/patch-ricamate/">Patch Ricamate</a></li>
-          <li><a href="/it/patch-velcro/">Patch Velcro</a></li>
-          <li><a href="/it/patch-woven/">Patch Woven</a></li>
-          <li><a href="/it/patch-pvc/">Patch PVC</a></li>
-          <li><a href="/it/portfolio/">Portfolio</a></li>
-          <li><a href="/it/come-lavoriamo/">Come lavoriamo</a></li>
+          <li><a href="../patch-ricamate/">Patch Ricamate</a></li>
+          <li><a href="../patch-velcro/">Patch Velcro</a></li>
+          <li><a href="../patch-woven/">Patch Woven</a></li>
+          <li><a href="../patch-pvc/">Patch PVC</a></li>
+          <li><a href="../portfolio/">Portfolio</a></li>
+          <li><a href="../come-lavoriamo/">Come lavoriamo</a></li>
         </ul>
       </nav>
-      <a href="/it/preventivo/" class="btn btn-accent header-cta">Richiedi preventivo</a>
+      <a href="../preventivo/" class="btn btn-accent header-cta">Richiedi preventivo</a>
     </div>
   </div>
 </header>
@@ -43,16 +50,16 @@
     <div class="container">
       <span class="eyebrow">Preventivo</span>
       <h1>Richiedi un preventivo</h1>
-      <p class="page-header-lead">Non chiediamo dati precisi prima di capire il progetto. Inviaci quello che hai: grafica, quantità indicativa e utilizzo previsto. Partiamo da lì.</p>
+      <p class="section-lead">Non chiediamo dati precisi prima di capire il progetto. Inviaci quello che hai: grafica, quantità indicativa e utilizzo previsto. Partiamo da lì.</p>
     </div>
   </section>
 
   <!-- ============================================================
        2. INTRO — COSA CI SERVE
        ============================================================ -->
-  <section class="section-sm">
+  <section class="content-block">
     <div class="container">
-      <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-32); align-items: start;">
+      <div class="content-grid content-grid--top">
         <div class="checklist-panel">
           <h2 class="checklist-panel-title">Cosa ci aiuta a prepararti una proposta</h2>
           <ul class="checklist-panel-list">
@@ -71,7 +78,7 @@
             <span class="method-note-label">Se non hai tutti i dati</span>
             <h3 class="method-note-title">Si parte anche da un'idea</h3>
             <p class="method-note-text">Non è necessario avere dimensioni precise, quantità definitive o grafica pronta. Puoi inviarci un'idea approssimativa e una vecchia patch da usare come riferimento.</p>
-            <p class="method-note-text" style="margin-top: var(--space-12);">Non siamo un configuratore online: siamo un laboratorio, e le domande giuste le facciamo noi.</p>
+            <p class="method-note-text">Non siamo un configuratore online: siamo un laboratorio, e le domande giuste le facciamo noi.</p>
           </div>
         </div>
       </div>
@@ -129,9 +136,13 @@
 
         <div class="form-field full">
           <button type="submit" class="btn btn-accent btn-lg btn-block">Invia richiesta</button>
-          <p class="form-note">I campi contrassegnati con * sono obbligatori. Ti risponderemo all'indirizzo email indicato.</p>
+          <p class="form-note">I campi contrassegnati con * sono obbligatori.</p>
+          <!-- NOTA TECNICA: il form non è ancora collegato a un servizio di invio
+               reale (vedi 08_CONVERSION_SYSTEM.md, nota aperta). Il messaggio sotto
+               è volutamente onesto: non dichiara un invio che non avviene. Quando
+               il backend sarà attivo, aggiornare messaggio e stile (.form-success). -->
           <div class="form-success" id="form-success" role="status">
-            Richiesta ricevuta. Il modulo è pronto per l'invio: collega questo form a un servizio di gestione preventivi (email, CRM o backend interno) per l'inoltro automatico.
+            L'invio automatico del modulo non è ancora attivo. Per richiedere il preventivo scrivici direttamente a <a href="mailto:info@euroricami.it" class="link">info@euroricami.it</a>, indicando le informazioni del progetto elencate sopra: ti rispondiamo con una valutazione tecnica.
           </div>
         </div>
 
@@ -142,12 +153,12 @@
   <!-- ============================================================
        4. COSA SUCCEDE DOPO L'INVIO
        ============================================================ -->
-  <section class="section section-alt">
+  <section class="section-light">
     <div class="container container-narrow">
       <span class="eyebrow">Dopo l'invio</span>
       <h2>Cosa succede dopo che invii la richiesta</h2>
-      <p class="section-lead" style="margin-bottom: var(--space-40);">Nessuna risposta automatica, nessun preventivo generico. Cinque passaggi reali.</p>
-      <div class="process-deep">
+      <p class="section-lead">Nessuna risposta automatica, nessun preventivo generico. Cinque passaggi reali.</p>
+      <div class="process-deep u-mt-48">
         <div class="process-deep-step">
           <div class="process-deep-num">01</div>
           <div>
@@ -203,24 +214,24 @@
     <div class="footer-links">
       <h3>Prodotti</h3>
       <ul>
-        <li><a href="/it/patch-ricamate/">Patch Ricamate</a></li>
-        <li><a href="/it/patch-velcro/">Patch Velcro</a></li>
-        <li><a href="/it/patch-woven/">Patch Woven</a></li>
-        <li><a href="/it/patch-pvc/">Patch PVC</a></li>
+        <li><a href="../patch-ricamate/">Patch Ricamate</a></li>
+        <li><a href="../patch-velcro/">Patch Velcro</a></li>
+        <li><a href="../patch-woven/">Patch Woven</a></li>
+        <li><a href="../patch-pvc/">Patch PVC</a></li>
       </ul>
     </div>
     <div class="footer-links">
       <h3>Metodo</h3>
       <ul>
-        <li><a href="/it/come-lavoriamo/">Come lavoriamo</a></li>
-        <li><a href="/it/laboratorio/">Laboratorio</a></li>
-        <li><a href="/it/portfolio/">Portfolio</a></li>
-        <li><a href="/it/preventivo/">Richiedi preventivo</a></li>
+        <li><a href="../come-lavoriamo/">Come lavoriamo</a></li>
+        <li><a href="../laboratorio/">Laboratorio</a></li>
+        <li><a href="../portfolio/">Portfolio</a></li>
+        <li><a href="../preventivo/">Richiedi preventivo</a></li>
       </ul>
     </div>
     <div class="footer-contact">
       <h3>Contatti</h3>
-      <p>info@euroricami.it<br>+39 000 000 0000</p>
+      <p><a href="mailto:info@euroricami.it">info@euroricami.it</a></p>
     </div>
   </div>
   <div class="footer-bottom">

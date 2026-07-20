@@ -8,28 +8,35 @@
 <link rel="canonical" href="https://patchlab.net/it/laboratorio/">
 <link rel="alternate" hreflang="it" href="https://patchlab.net/it/laboratorio/">
 <link rel="alternate" hreflang="x-default" href="https://patchlab.net/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PatchLab by Euroricami">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Laboratorio patch Euroricami: produzione e controllo qualità | PatchLab">
+<meta property="og:description" content="Dentro il laboratorio PatchLab: macchinari, punchatura, campionatura, controllo qualità e archivio tecnico per la produzione di patch personalizzate.">
+<meta property="og:url" content="https://patchlab.net/it/laboratorio/">
+<meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/it/" class="logo">PatchLab <span class="logo-sub">by Euroricami</span></a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Apri menu" aria-expanded="false">
+    <a href="../" class="logo">PatchLab <span class="logo-sub">by Euroricami</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Apri menu" aria-expanded="false" aria-controls="nav-panel">
       <span></span><span></span><span></span>
     </button>
     <div class="nav-panel" id="nav-panel">
       <nav class="main-nav">
         <ul>
-          <li><a href="/it/patch-ricamate/">Patch Ricamate</a></li>
-          <li><a href="/it/patch-velcro/">Patch Velcro</a></li>
-          <li><a href="/it/patch-woven/">Patch Woven</a></li>
-          <li><a href="/it/patch-pvc/">Patch PVC</a></li>
-          <li><a href="/it/portfolio/">Portfolio</a></li>
-          <li><a href="/it/come-lavoriamo/">Come lavoriamo</a></li>
+          <li><a href="../patch-ricamate/">Patch Ricamate</a></li>
+          <li><a href="../patch-velcro/">Patch Velcro</a></li>
+          <li><a href="../patch-woven/">Patch Woven</a></li>
+          <li><a href="../patch-pvc/">Patch PVC</a></li>
+          <li><a href="../portfolio/">Portfolio</a></li>
+          <li><a href="../come-lavoriamo/">Come lavoriamo</a></li>
         </ul>
       </nav>
-      <a href="/it/preventivo/" class="btn btn-accent header-cta">Richiedi preventivo</a>
+      <a href="../preventivo/" class="btn btn-accent header-cta">Richiedi preventivo</a>
     </div>
   </div>
 </header>
@@ -43,16 +50,16 @@
     <div class="container">
       <span class="eyebrow">Produzione</span>
       <h1>Dentro il laboratorio</h1>
-      <p class="page-header-lead">PatchLab nasce dall'esperienza produttiva di Euroricami: macchinari, punchatura, filati, campionatura e archivio tecnico lavorano insieme per trasformare un disegno in una patch reale.</p>
+      <p class="section-lead">PatchLab nasce dall'esperienza produttiva di Euroricami: macchinari, punchatura, filati, campionatura e archivio tecnico lavorano insieme per trasformare un disegno in una patch reale.</p>
     </div>
   </section>
 
   <!-- ============================================================
        2. LE MACCHINE NON BASTANO
        ============================================================ -->
-  <section class="section">
+  <section>
     <div class="container">
-      <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-64); align-items: center;">
+      <div class="content-grid">
         <div>
           <span class="eyebrow">Competenza tecnica</span>
           <h2>Le macchine non bastano</h2>
@@ -60,10 +67,11 @@
           <p>La stessa macchina, con due file diversi, produce due patch diverse. Una precisa e solida. L'altra piena di difetti che non si notano fino alla produzione in serie.</p>
           <p>La competenza tecnica di chi prepara il file macchina è quello che separa un laboratorio da un operatore.</p>
         </div>
-        <div class="photo-frame">
-          <div class="gallery-placeholder">
-            <span>Foto laboratorio<br><small>In arrivo</small></span>
-          </div>
+        <!-- PLACEHOLDER FOTO: sostituire con uno scatto reale del laboratorio
+             (macchine Tajima, reparto patch) appena disponibile dal PatchLab
+             Photo Studio (vedi 07_PHOTOGRAPHY_GUIDE.md) -->
+        <div class="image-placeholder" aria-hidden="true">
+          <span>Laboratorio</span>
         </div>
       </div>
     </div>
@@ -72,27 +80,27 @@
   <!-- ============================================================
        3. IL REPARTO PATCH
        ============================================================ -->
-  <section class="section section-alt">
+  <section class="section-light">
     <div class="container">
       <span class="eyebrow">Struttura</span>
       <h2>Il reparto patch</h2>
       <p class="section-lead">Non un servizio aggiunto. Un reparto dedicato all'interno di Euroricami.</p>
-      <div class="card-grid" style="margin-top: var(--space-40);">
-        <div class="academy-note">
-          <span class="academy-label">Campionatura</span>
+      <div class="card-grid">
+        <div class="card card-simple">
+          <h3>Campionatura</h3>
           <p>Prima di avviare la produzione in serie, realizziamo il campione fisico su file validato. Il cliente approva — o richiede modifiche — sul pezzo reale, non su una simulazione digitale.</p>
         </div>
-        <div class="academy-note">
-          <span class="academy-label">Punchatura interna</span>
+        <div class="card card-simple">
+          <h3>Punchatura interna</h3>
           <p>Il file macchina viene preparato internamente per le lavorazioni di nostra competenza. È il passaggio più tecnico dell'intero processo: un file sbagliato produce un risultato sbagliato a qualsiasi prezzo.</p>
         </div>
-        <div class="academy-note">
-          <span class="academy-label">Controllo qualità</span>
+        <div class="card card-simple">
+          <h3>Controllo qualità</h3>
           <p>Ogni patch viene verificata prima della consegna. Colori, dimensioni, bordo e retro vengono confrontati con il campione approvato. Non consegniamo pezzi non conformi.</p>
         </div>
-        <div class="academy-note">
-          <span class="academy-label">Archivio tecnico</span>
-          <p>File macchina, campione approvato e specifiche tecniche vengono archiviati dopo ogni ordine. Il riordine riparte da questi dati — senza rifare la punchatura, senza rifare il campione se le specifiche non sono cambiate.</p>
+        <div class="card card-simple">
+          <h3>Archivio tecnico</h3>
+          <p>File macchina, campione approvato e specifiche tecniche vengono archiviati dopo ogni ordine. Il riordino riparte da questi dati — senza rifare la punchatura, senza rifare il campione se le specifiche non sono cambiate.</p>
         </div>
       </div>
     </div>
@@ -101,12 +109,12 @@
   <!-- ============================================================
        4. DAL FILE ALLA PATCH
        ============================================================ -->
-  <section class="section">
+  <section>
     <div class="container">
       <span class="eyebrow">Processo produttivo</span>
       <h2>Dal file alla patch</h2>
       <p class="section-lead">Sei passaggi tecnici, ognuno con un impatto sul risultato finale.</p>
-      <div class="process-deep" style="margin-top: var(--space-48);">
+      <div class="process-deep u-mt-48">
         <div class="process-deep-step">
           <div class="process-deep-num">01</div>
           <div>
@@ -162,12 +170,12 @@
   <!-- ============================================================
        5. CONTROLLO QUALITÀ (checklist)
        ============================================================ -->
-  <section class="section section-alt">
+  <section class="section-light">
     <div class="container container-narrow">
       <span class="eyebrow">Qualità</span>
       <h2>Cosa controlliamo prima di consegnare</h2>
-      <p class="section-lead" style="margin-bottom: var(--space-40);">Il controllo non è un passaggio burocratico. È quello che separa un lotto buono da un lotto da rifare.</p>
-      <div class="checklist-panel">
+      <p class="section-lead">Il controllo non è un passaggio burocratico. È quello che separa un lotto buono da un lotto da rifare.</p>
+      <div class="checklist-panel u-mt-48">
         <h3 class="checklist-panel-title">Punti di controllo</h3>
         <ul class="checklist-panel-list">
           <li class="checklist-panel-item"><strong>Colori</strong> — corrispondenti al campione approvato</li>
@@ -185,19 +193,22 @@
   <!-- ============================================================
        6. ARCHIVIO
        ============================================================ -->
-  <section class="section">
+  <section>
     <div class="container">
-      <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-48); align-items: start;">
+      <div class="content-grid content-grid--top">
         <div>
           <span class="eyebrow">Archivio</span>
           <h2>Ogni progetto lascia una traccia</h2>
           <p>Dopo ogni ordine completato, archiviamo il file macchina definitivo, una copia del campione approvato, le specifiche tecniche e le note di produzione rilevanti.</p>
           <p>Questi dati non hanno una scadenza. Un cliente che torna dopo due anni per riordinare la stessa patch trova i file esattamente dove li avevamo lasciati.</p>
         </div>
-        <div class="academy-note" style="margin-top: var(--space-8);">
-          <span class="academy-label">Cosa significa per il riordine</span>
-          <p>Se le specifiche non cambiano, il riordine parte dal file già validato. Non si riacquista la punchatura, non si rifà il campione, non si ricomincia dall'inizio. Il processo è più rapido e meno costoso del primo ordine.</p>
-          <p style="margin-top: var(--space-12);">Se le specifiche cambiano — dimensioni diverse, grafica aggiornata, nuovo supporto — valutiamo insieme cosa rifare e cosa riusare dall'archivio.</p>
+        <div class="callout callout-expert">
+          <span class="callout-icon" aria-hidden="true">✓</span>
+          <div>
+            <p class="callout-title">Cosa significa per il riordino</p>
+            <p class="callout-text">Se le specifiche non cambiano, il riordino parte dal file già validato. Non si riacquista la punchatura, non si rifà il campione, non si ricomincia dall'inizio. Il processo è più rapido e meno costoso del primo ordine.</p>
+            <p class="callout-text">Se le specifiche cambiano — dimensioni diverse, grafica aggiornata, nuovo supporto — valutiamo insieme cosa rifare e cosa riusare dall'archivio.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -206,11 +217,11 @@
   <!-- ============================================================
        7. CTA FINALE
        ============================================================ -->
-  <section class="section-cta">
-    <div class="container text-center">
+  <section class="cta-preventivo">
+    <div class="container cta-inner">
       <h2>Hai un progetto da realizzare?</h2>
       <p>Inviaci la grafica e le informazioni di base. Analizziamo il file, valutiamo la tecnica giusta e prepariamo la proposta.</p>
-      <a href="/it/preventivo/" class="btn btn-accent btn-lg">Richiedi preventivo</a>
+      <a href="../preventivo/" class="btn btn-accent btn-lg">Richiedi preventivo</a>
     </div>
   </section>
 
@@ -225,24 +236,24 @@
     <div class="footer-links">
       <h3>Prodotti</h3>
       <ul>
-        <li><a href="/it/patch-ricamate/">Patch Ricamate</a></li>
-        <li><a href="/it/patch-velcro/">Patch Velcro</a></li>
-        <li><a href="/it/patch-woven/">Patch Woven</a></li>
-        <li><a href="/it/patch-pvc/">Patch PVC</a></li>
+        <li><a href="../patch-ricamate/">Patch Ricamate</a></li>
+        <li><a href="../patch-velcro/">Patch Velcro</a></li>
+        <li><a href="../patch-woven/">Patch Woven</a></li>
+        <li><a href="../patch-pvc/">Patch PVC</a></li>
       </ul>
     </div>
     <div class="footer-links">
       <h3>Metodo</h3>
       <ul>
-        <li><a href="/it/come-lavoriamo/">Come lavoriamo</a></li>
-        <li><a href="/it/laboratorio/">Laboratorio</a></li>
-        <li><a href="/it/portfolio/">Portfolio</a></li>
-        <li><a href="/it/preventivo/">Richiedi preventivo</a></li>
+        <li><a href="../come-lavoriamo/">Come lavoriamo</a></li>
+        <li><a href="../laboratorio/">Laboratorio</a></li>
+        <li><a href="../portfolio/">Portfolio</a></li>
+        <li><a href="../preventivo/">Richiedi preventivo</a></li>
       </ul>
     </div>
     <div class="footer-contact">
       <h3>Contatti</h3>
-      <p>info@euroricami.it<br>+39 000 000 0000</p>
+      <p><a href="mailto:info@euroricami.it">info@euroricami.it</a></p>
     </div>
   </div>
   <div class="footer-bottom">

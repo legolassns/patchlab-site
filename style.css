@@ -20,7 +20,10 @@
    12. Forms
    13. Footer
    14. Utilities
+   16. Sprint 4 — Visual Language (posizionata prima di 15 per storia del file)
+   17. Sprint 7 — Trust & Conversion Components
    15. Responsive
+   18. Reduced Motion
    ============================================================= */
 
 
@@ -29,7 +32,12 @@
    ========================================================================== */
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Gli anchor scrollano sotto l'header sticky (72px): il padding evita
+     che il titolo di destinazione resti nascosto dietro l'header. */
+  scroll-padding-top: 88px;
+}
 body {
   margin: 0;
   font-family: var(--font-base);
@@ -214,6 +222,10 @@ section + section { border-top: 1px solid var(--color-border); }
   padding: 0 var(--space-24);
 }
 
+/* Variante stretta: consuma il token --container-narrow (riservato dallo
+   Sprint 1). Per sezioni a colonna singola: checklist, note, testo lungo. */
+.container-narrow { max-width: var(--container-narrow); }
+
 
 /* ==========================================================================
    06. GRID
@@ -228,6 +240,18 @@ section + section { border-top: 1px solid var(--color-border); }
 .card-grid-5 { grid-template-columns: repeat(5, 1fr); }
 /* 3 colonne: per sezioni con 5 elementi o contenuto più ampio per card */
 .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+/* Due colonne affiancate per blocchi testo+pannello o testo+immagine.
+   Già referenziata dalle pagine Sprint 7 (preventivo, come-lavoriamo,
+   laboratorio): questa regola sostituisce gli stili inline precedenti. */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-48);
+  align-items: center;
+}
+/* Variante con allineamento in alto (es. checklist accanto a una nota) */
+.content-grid--top { align-items: start; }
 
 
 /* ==========================================================================
@@ -282,6 +306,10 @@ section + section { border-top: 1px solid var(--color-border); }
 .card-link:hover { color: var(--color-accent-dark); }
 .card-simple { text-align: left; }
 .card-simple h3 { font-size: var(--text-base); }
+/* Quando il titolo della card è un H2 per esigenze di struttura heading
+   (es. "Caratteristiche tecniche" sulle pagine di lavorazione), la resa
+   visiva resta identica al titolo di card standard. */
+.card-simple h2 { font-size: var(--text-base); margin-bottom: 0.4rem; }
 
 /* Immagini reali e placeholder */
 .image-placeholder {
@@ -321,6 +349,14 @@ section + section { border-top: 1px solid var(--color-border); }
   object-fit: cover;
 }
 .card-image.photo-frame { aspect-ratio: 16 / 10; }
+
+/* Varianti di formato per le fotografie in arrivo dal PatchLab Photo Studio.
+   Stesso contenitore, stesso bordo, stesso comportamento (object-fit: cover):
+   cambia solo la proporzione. Da usare quando lo scatto reale ha un taglio
+   nativo diverso dal 4:3 di default, per evitare ritagli aggressivi. */
+.photo-frame--square   { aspect-ratio: 1 / 1; }
+.photo-frame--portrait { aspect-ratio: 4 / 5; }
+.photo-frame--wide     { aspect-ratio: 16 / 9; }
 
 /* Badge — componente pronto, non ancora usato in nessuna pagina esistente.
    Utile per future etichette (es. tipologia lavorazione, "nuovo" in portfolio). */
@@ -401,7 +437,8 @@ section + section { border-top: 1px solid var(--color-border); }
   transition: color var(--transition-base), border-color var(--transition-base);
 }
 .main-nav a:hover,
-.main-nav a.active {
+.main-nav a.active,
+.main-nav a[aria-current="page"] {
   color: var(--color-accent);
   border-color: var(--color-accent);
 }
@@ -627,14 +664,24 @@ details[open] > .faq-question::after { transform: rotate(45deg); }
   border-color: var(--color-accent);
 }
 .form-note { font-size: var(--text-xs); color: var(--color-gray); }
+
+/* Campo obbligatorio non compilato: bordo di errore applicato da main.js
+   tramite classe (consuma il token --color-danger, prima hardcoded in JS). */
+.form-field .field-error { border-color: var(--color-danger); }
+
+/* Box mostrato dopo il submit. Finché il form non è collegato a un invio
+   reale (vedi 08_CONVERSION_SYSTEM.md, nota tecnica aperta) il messaggio è
+   informativo, non di successo: la palette è quindi neutra/informativa.
+   Quando l'invio reale sarà attivo, ripristinare i token --color-success-*. */
 .form-success {
   display: none;
   margin-top: var(--space-24);
   padding: var(--space-16) var(--space-24);
-  background: var(--color-success-bg);
-  border: 1px solid var(--color-success-border);
+  background: var(--color-tint-blue);
+  border: 1px solid #dde8f4;
+  border-left: 3px solid var(--color-accent);
   border-radius: var(--radius-md);
-  color: var(--color-success-text);
+  color: var(--color-gray-dark);
   font-size: var(--text-sm);
 }
 .form-success.visible { display: block; }
@@ -685,6 +732,7 @@ details[open] > .faq-question::after { transform: rotate(45deg); }
 .u-span-2 { grid-column: span 2; }
 .u-mt-24 { margin-top: var(--space-24); }
 .u-mt-32 { margin-top: var(--space-32); }
+.u-mt-48 { margin-top: var(--space-48); }
 
 /* Nasconde visivamente un elemento mantenendolo accessibile a screen reader */
 .u-sr-only {
@@ -1139,6 +1187,8 @@ h3 { letter-spacing: -0.01em; }
   margin: 0;
   line-height: 1.65;
 }
+/* Più paragrafi nello stesso callout: spaziatura interna coerente */
+.callout-text + .callout-text { margin-top: var(--space-8); }
 
 /* 16i — Photo Caption System ------------------------------------------------ */
 /*
@@ -1321,10 +1371,13 @@ figure.has-caption .photo-frame { border-radius: var(--radius-md) var(--radius-m
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
+  min-height: 160px;
   font-size: var(--text-2xs);
   color: var(--color-gray);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  text-align: center;
   background: repeating-linear-gradient(
     45deg,
     var(--color-white),
@@ -1695,6 +1748,8 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
   margin: 0;
   line-height: 1.68;
 }
+/* Più paragrafi nella stessa nota: spaziatura interna coerente senza inline style */
+.method-note-text + .method-note-text { margin-top: var(--space-12); }
 
 /* --- Responsive Sprint 7 --- */
 @media (max-width: 960px) {
@@ -1786,6 +1841,11 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
   }
   .cta-soft-inner { flex-direction: column; align-items: flex-start; }
 
+  /* Spec-list: su schermi stretti le coppie etichetta/valore si impilano,
+     così i valori lunghi restano leggibili senza andare a capo a metà parola */
+  .spec-list li { flex-direction: column; gap: var(--space-4); }
+  .spec-list li span:last-child { text-align: left; }
+
   /* Sprint 4 */
   .gallery-exhibit { grid-template-columns: 1fr; grid-auto-rows: 220px; }
   .gallery-item:nth-child(n) { grid-column: 1; grid-row: auto; }
@@ -1795,4 +1855,27 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
   .timeline-step:not(:last-child)::after { left: 19px; }
   .portfolio-card-specs { grid-template-columns: auto 1fr; }
   .macro-story-body { padding: var(--space-32) var(--space-24); }
+}
+
+/* --bp-mobile: 780px — layout a due colonne generico */
+@media (max-width: 780px) {
+  .content-grid { grid-template-columns: 1fr; gap: var(--space-32); }
+}
+
+
+/* ==========================================================================
+   18. REDUCED MOTION
+   Chi ha richiesto meno animazioni a livello di sistema non riceve né
+   smooth scroll né micro-animazioni: il sito resta pienamente funzionale.
+   L'uso di !important qui è deliberato: deve vincere su ogni transizione
+   dichiarata dai componenti.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

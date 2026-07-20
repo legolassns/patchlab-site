@@ -23,15 +23,30 @@ function initMobileNav() {
       toggle.setAttribute("aria-expanded", "false");
     });
   });
+
+  /* Esc chiude il menu aperto e riporta il focus sul bottone */
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && header.classList.contains("nav-open")) {
+      header.classList.remove("nav-open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.focus();
+    }
+  });
 }
 
-/* Evidenzia nel menu la voce corrispondente alla pagina corrente */
+/* Evidenzia nel menu la voce corrispondente alla pagina corrente.
+   Confronta i pathname risolti (link.pathname), non l'attributo href:
+   così funziona con link relativi e con qualsiasi prefisso di deploy
+   (patchlab.net/it/... oppure il path temporaneo di GitHub Pages). */
 function highlightActiveNavLink() {
-  var currentPath = window.location.pathname;
+  var currentPath = window.location.pathname.replace(/index\.html$/, "");
   document.querySelectorAll(".main-nav a").forEach(function (link) {
-    var linkHref = link.getAttribute("href");
-    if (linkHref && currentPath === linkHref) {
+    var linkPath = link.pathname.replace(/index\.html$/, "");
+    if (linkPath === currentPath) {
       link.classList.add("active");
+      if (!link.hasAttribute("aria-current")) {
+        link.setAttribute("aria-current", "page");
+      }
     }
   });
 }
@@ -52,12 +67,10 @@ function initQuoteForm() {
     var isValid = true;
 
     requiredFields.forEach(function (field) {
-      if (!field.value.trim()) {
-        isValid = false;
-        field.style.borderColor = "#c23b3b";
-      } else {
-        field.style.borderColor = "";
-      }
+      /* Lo stato di errore vive nel CSS (.field-error, token --color-danger),
+         non in uno stile inline */
+      field.classList.toggle("field-error", !field.value.trim());
+      if (!field.value.trim()) isValid = false;
     });
 
     if (!isValid) {

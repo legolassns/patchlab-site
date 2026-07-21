@@ -64,6 +64,13 @@ jobs:
           fi
 
       - name: Test funzionale endpoint (nessun invio email reale, nessuna credenziale disponibile)
+        # Nota: config/patchlab-mail.php non esiste in questo ambiente (nessuna
+        # credenziale reale nel repository, per costruzione). Il test dedicato
+        # a questo scenario (tests/smoke-test.sh, "Dati validi, configurazione
+        # SMTP assente") si aspetta esplicitamente HTTP 500 come esito CORRETTO
+        # e non lo tratta come fallimento: fallisce solo se la risposta non è
+        # JSON pulito, è vuota, contiene uno stack trace/credenziale, o se il
+        # codice HTTP non è quello atteso per lo specifico test in corso.
         run: |
           set -e
           PATCHLAB_RATE_LIMIT_SECONDS=0 php -S 127.0.0.1:8000 -t . >/tmp/php-server.log 2>&1 &

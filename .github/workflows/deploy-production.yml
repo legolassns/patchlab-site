@@ -1,0 +1,148 @@
+name: Deploy PatchLab to Production
+
+# Pubblica il sito statico su DominiOK (public_html) via FTPS esplicito.
+# GitHub resta l'unica fonte del codice: questo workflow legge il repository
+# e carica soltanto i file pubblici del sito, mai la documentazione interna.
+#
+# Vedi DEPLOY_SETUP.md nella root del repository per la guida operativa
+# completa (secrets richiesti, primo deploy, rollback, clean deploy).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: prepara e verifica _release/ senza caricare nulla sul server"
+        type: boolean
+        default: false
+
+# Un solo deploy di produzione alla volta. Un deploy in coda ASPETTA quello
+# in corso (non lo annulla): interrompere un trasferimento FTP a metà
+# lascerebbe il server in uno stato incoerente, quindi cancel-in-progress
+# resta false di proposito.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build release and deploy via FTPS
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verifica presenza dei GitHub Secrets richiesti
+        id: check-secrets
+        env:
+          FTP_SERVER: ${{ secrets.PATCHLAB_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.PATCHLAB_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.PATCHLAB_FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.PATCHLAB_FTP_PORT }}
+        run: |
+          missing=0
+          for name in FTP_SERVER FTP_USERNAME FTP_PASSWORD FTP_PORT; do
+            value="${!name}"
+            if [ -z "$value" ]; then
+              echo "::error::Secret mancante: $name non è configurato in Settings → Secrets and variables → Actions (environment 'production')."
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "::error::Deploy interrotto: configura tutti i secrets richiesti prima di rilanciare il workflow. Vedi DEPLOY_SETUP.md."
+            exit 1
+          fi
+          echo "Tutti i secrets richiesti sono presenti."
+
+      - name: Prepara _release/ (whitelist esplicita dei file pubblici)
+        run: |
+          set -e
+          rm -rf _release
+          mkdir -p _release
+
+          # Solo i file e le cartelle elencati qui finiscono online.
+          # Aggiungere una nuova voce esplicitamente quando nasce un nuovo
+          # asset pubblico: non copiare mai l'intera root per esclusione.
+          PUBLIC_FILES="index.html patch-pvc.html patch-ricamate.html patch-sublimatiche.html patch-termosaldabili.html patch-velcro.html patch-woven.html portfolio.html preventivo.html style.css main.js"
+
+          for f in $PUBLIC_FILES; do
+            if [ -f "$f" ]; then
+              cp "$f" "_release/$f"
+            else
+              echo "::warning::File pubblico atteso non trovato, saltato: $f"
+            fi
+          done
+
+          if [ -d "assets" ]; then
+            mkdir -p _release/assets
+            cp -r assets/. _release/assets/
+          fi
+
+          if [ -d "it" ]; then
+            mkdir -p _release/it
+            cp -r it/. _release/it/
+          fi
+
+          # robots.txt / sitemap.xml / CNAME: inclusi solo se già presenti nel
+          # repository. Non li generiamo qui: nessuna assunzione su contenuti
+          # non ancora validati.
+          for f in robots.txt sitemap.xml CNAME; do
+            if [ -f "$f" ]; then
+              cp "$f" "_release/$f"
+            fi
+          done
+
+      - name: Verifica di sicurezza su _release/
+        run: |
+          set -e
+          if [ ! -f "_release/index.html" ]; then
+            echo "::error::_release/index.html mancante: la document root non conterrebbe una home page valida."
+            exit 1
+          fi
+          if find _release -iname "*.md" | grep -q .; then
+            echo "::error::Trovati file Markdown in _release/: la documentazione non deve mai essere pubblicata."
+            exit 1
+          fi
+          if [ -d "_release/PATCHLAB_MASTER" ] || find _release -iname "*PATCHLAB_MASTER*" | grep -q .; then
+            echo "::error::PATCHLAB_MASTER non deve mai comparire in _release/."
+            exit 1
+          fi
+          if [ -d "_release/.github" ] || [ -d "_release/.git" ] || [ -d "_release/.claude" ]; then
+            echo "::error::Cartelle di configurazione interne presenti in _release/."
+            exit 1
+          fi
+          echo "Contenuto di _release/ pronto per il deploy:"
+          find _release -maxdepth 2 | sort
+
+      - name: Deploy via FTPS esplicito
+        if: ${{ !inputs.dry_run }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.PATCHLAB_FTP_SERVER }}
+          username: ${{ secrets.PATCHLAB_FTP_USERNAME }}
+          password: ${{ secrets.PATCHLAB_FTP_PASSWORD }}
+          port: ${{ secrets.PATCHLAB_FTP_PORT }}
+          protocol: ftps
+          # L'account deploy@patchlab.net è già radicato in public_html:
+          # la document root del dominio è quindi "./", non "public_html/".
+          # Se una verifica futura mostra il contrario, aggiornare qui e in
+          # DEPLOY_SETUP.md, non altrove.
+          server-dir: ./
+          local-dir: ./_release/
+          log-level: verbose
+          exclude: |
+            **/.DS_Store
+            **/Thumbs.db
+
+      - name: Dry run — nessun upload eseguito
+        if: ${{ inputs.dry_run }}
+        run: |
+          echo "dry_run attivo: _release/ è stata generata e verificata, ma non è stato caricato nulla sul server."

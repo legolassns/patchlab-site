@@ -90,7 +90,17 @@
        ============================================================ -->
   <section class="content-block">
     <div class="container">
-      <form class="quote-form" id="quote-form" novalidate>
+      <form class="quote-form" id="quote-form" method="post" action="/api/invia-preventivo.php" novalidate>
+
+        <!-- Campo trappola anti-spam: invisibile e fuori dal tab-order per
+             chi naviga da tastiera o screen reader (mai compilato da una
+             persona reale); i bot che compilano ogni campo lo riempiono e
+             vengono scartati silenziosamente dal server. -->
+        <div class="u-sr-only">
+          <label for="sito-web">Lascia questo campo vuoto</label>
+          <input type="text" id="sito-web" name="sito-web" tabindex="-1" autocomplete="off">
+        </div>
+        <input type="hidden" id="ts-apertura" name="ts_apertura" value="">
 
         <div class="form-field">
           <label for="nome">Nome e cognome *</label>
@@ -145,15 +155,10 @@
         </div>
 
         <div class="form-field full">
-          <button type="submit" class="btn btn-accent btn-lg btn-block">Invia richiesta</button>
+          <button type="submit" class="btn btn-accent btn-lg btn-block" id="quote-form-submit">Invia richiesta</button>
           <p class="form-note">I campi contrassegnati con * sono obbligatori.</p>
-          <!-- NOTA TECNICA: il form non è ancora collegato a un servizio di invio
-               reale (vedi 08_CONVERSION_SYSTEM.md, nota aperta). Il messaggio sotto
-               è volutamente onesto: non dichiara un invio che non avviene. Quando
-               il backend sarà attivo, aggiornare messaggio e stile (.form-success). -->
-          <div class="form-success" id="form-success" role="status">
-            L'invio automatico del modulo non è ancora attivo. Per richiedere il preventivo scrivici direttamente a <a href="mailto:info@patchlab.net" class="link">info@patchlab.net</a>, indicando le informazioni del progetto elencate sopra: ti rispondiamo con una valutazione tecnica.
-          </div>
+          <p class="form-note">Utilizziamo i dati inseriti solo per rispondere alla tua richiesta di preventivo, non per altre finalità.</p>
+          <div class="form-feedback" id="form-feedback" role="status" aria-live="polite"></div>
         </div>
 
       </form>
@@ -182,7 +187,7 @@
           <div>
             <span class="process-deep-label">Analisi</span>
             <h3 class="process-deep-title">Valutiamo la grafica</h3>
-            <p class="process-deep-text">Se hai allegato un file, lo analizziamo in rapporto alle dimensioni richieste: leggibilità del testo, colori, dettagli. Se il file non è adatto alla lavorazione scelta, te lo diciamo prima di procedere.</p>
+            <p class="process-deep-text">Se ci hai già inviato un file grafico — anche via email, il modulo non gestisce ancora gli allegati — lo analizziamo in rapporto alle dimensioni richieste: leggibilità del testo, colori, dettagli. Se non l'hai ancora inviato, te lo chiediamo noi nella risposta. Se il file non è adatto alla lavorazione scelta, te lo diciamo prima di procedere.</p>
           </div>
         </div>
         <div class="process-deep-step">

@@ -1,0 +1,17 @@
+# Configurazione reale del mailer PatchLab: contiene credenziali SMTP.
+# Il template senza credenziali vive in config/patchlab-mail.example.php
+# ed è tracciato normalmente. Il file reale va creato solo sul server,
+# fuori da questo repository (vedi FORM_SETUP.md).
+config/patchlab-mail.php
+
+# File di ambiente locali, se mai introdotti in futuro.
+.env
+.env.*
+
+# Log e file temporanei locali.
+logs/
+temp/
+
+# NOTA: vendor/ NON è escluso. Contiene PHPMailer ufficiale vendorizzato
+# manualmente (nessun Composer in uso), tracciato come codice sorgente
+# ordinario. Vedi FORM_SETUP.md per provenienza e verifica di integrità.

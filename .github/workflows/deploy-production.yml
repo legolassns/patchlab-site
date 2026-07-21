@@ -40,6 +40,55 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.37.2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Lint PHP (php -l) su tutti i file PHP del progetto
+        run: |
+          set -e
+          php_files=$(find . -type f -name "*.php" -not -path "./_release/*")
+          echo "File PHP da controllare:"
+          echo "$php_files"
+          status=0
+          while IFS= read -r file; do
+            if ! php -l "$file"; then
+              status=1
+            fi
+          done <<< "$php_files"
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Lint PHP fallito su almeno un file. Deploy interrotto."
+            exit 1
+          fi
+
+      - name: Test funzionale endpoint (nessun invio email reale, nessuna credenziale disponibile)
+        run: |
+          set -e
+          PATCHLAB_RATE_LIMIT_SECONDS=0 php -S 127.0.0.1:8000 -t . >/tmp/php-server.log 2>&1 &
+          server_pid=$!
+
+          # Attende che il server integrato risponda, senza sleep fissi lunghi.
+          for i in $(seq 1 20); do
+            if curl -s -o /dev/null "http://127.0.0.1:8000/"; then
+              break
+            fi
+            sleep 0.5
+          done
+
+          chmod +x tests/smoke-test.sh
+          test_status=0
+          tests/smoke-test.sh "http://127.0.0.1:8000" || test_status=1
+
+          kill "$server_pid" 2>/dev/null || true
+
+          if [ "$test_status" -ne 0 ]; then
+            echo "::error::Test funzionale dell'endpoint fallito. Deploy interrotto."
+            cat /tmp/php-server.log || true
+            exit 1
+          fi
+
       - name: Verifica presenza dei GitHub Secrets richiesti
         id: check-secrets
         env:
@@ -91,6 +140,23 @@ jobs:
             cp -r it/. _release/it/
           fi
 
+          # api/: endpoint PHP pubblico del modulo preventivo. Contiene solo
+          # codice, mai credenziali: quelle vivono fuori dal repository (vedi
+          # FORM_SETUP.md). config/ NON viene mai copiato qui: è un template
+          # di riferimento per Stefano, non un asset del sito pubblico.
+          if [ -d "api" ]; then
+            mkdir -p _release/api
+            cp -r api/. _release/api/
+          fi
+
+          # vendor/: PHPMailer ufficiale vendorizzato (vedi FORM_SETUP.md per
+          # provenienza e verifica di integrità). Solo codice sorgente e
+          # licenza, nessuna configurazione.
+          if [ -d "vendor" ]; then
+            mkdir -p _release/vendor
+            cp -r vendor/. _release/vendor/
+          fi
+
           # robots.txt / sitemap.xml / CNAME: inclusi solo se già presenti nel
           # repository. Non li generiamo qui: nessuna assunzione su contenuti
           # non ancora validati.
@@ -132,6 +198,34 @@ jobs:
             echo "::error::Trovati file .gitkeep in _release/: non devono essere pubblicati."
             exit 1
           fi
+          if [ -d "_release/config" ]; then
+            echo "::error::La cartella config/ non deve mai essere pubblicata (contiene il template della configurazione mailer)."
+            exit 1
+          fi
+
+          # Ricerca di pattern che assomigliano a credenziali reali già
+          # assegnate nel codice PHP pubblicato. L'endpoint non deve MAI
+          # contenere una password hardcoded: le credenziali vivono solo nel
+          # file di configurazione esterno al repository (vedi FORM_SETUP.md).
+          # I pattern cercano un valore non vuoto assegnato, non solo il nome
+          # della chiave, per non generare falsi positivi sulla struttura del
+          # codice o su placeholder come CHANGE_ME_APPLICATION_PASSWORD.
+          if find _release -type f -name "*.php" | grep -q .; then
+            if grep -rIEn "smtp_password['\"]?\s*(=>|=)\s*['\"][^'\"]{6,}['\"]" _release --include="*.php" \
+                 | grep -viE "change_me|changeme|esempio|example" | grep -q .; then
+              echo "::error::Trovata una possibile password SMTP reale hardcoded in un file PHP pubblicato."
+              exit 1
+            fi
+            if grep -rIEn "ZOHO_SMTP_PASSWORD\s*=" _release --include="*.php" | grep -q .; then
+              echo "::error::Trovato un riferimento a ZOHO_SMTP_PASSWORD con valore assegnato in un file PHP pubblicato."
+              exit 1
+            fi
+            if grep -rIEn "password\s+applicazione\s*[:=]\s*\S+" _release --include="*.php" | grep -q .; then
+              echo "::error::Trovato un possibile valore di password applicazione in un file PHP pubblicato."
+              exit 1
+            fi
+          fi
+
           echo "Contenuto di _release/ pronto per il deploy:"
           find _release -maxdepth 2 | sort
 

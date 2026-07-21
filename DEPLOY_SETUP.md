@@ -22,11 +22,13 @@ git push origin main
         ▼
 GitHub Actions — .github/workflows/deploy-production.yml
         │  1. checkout del commit esatto
-        │  2. verifica presenza dei secrets richiesti
-        │  3. costruzione di _release/ (whitelist esplicita dei file pubblici)
-        │  4. rimozione dei file .gitkeep da _release/ (vedi sezione 24a)
-        │  5. verifica di sicurezza su _release/ (niente .md, niente .gitkeep, niente PATCHLAB_MASTER, niente .github/.git/.claude)
-        │  6. upload di _release/ via FTPS esplicito
+        │  2. setup PHP reale + lint (php -l) su tutti i file .php del progetto
+        │  3. test funzionale dell'endpoint (php -S, nessun invio email reale)
+        │  4. verifica presenza dei secrets richiesti
+        │  5. costruzione di _release/ (whitelist esplicita dei file pubblici, incluso vendor/PHPMailer)
+        │  6. rimozione dei file .gitkeep da _release/ (vedi sezione 24a)
+        │  7. verifica di sicurezza su _release/ (niente .md, niente .gitkeep, niente PATCHLAB_MASTER, niente .github/.git/.claude, niente config/, niente credenziali SMTP hardcoded)
+        │  8. upload di _release/ via FTPS esplicito
         ▼
 DominiOK — cPanel — account FTP deploy@patchlab.net → public_html/
         ▼
@@ -101,6 +103,8 @@ Whitelist esplicita usata nello step "Prepara `_release/`" (aggiornarla qui e ne
 - `main.js`
 - `assets/` (intera cartella, immagini incluse)
 - `it/` (intera cartella, tutte le pagine italiane)
+- `api/` (endpoint PHP del modulo preventivo — solo codice, mai credenziali: vedi `FORM_SETUP.md`)
+- `vendor/` (PHPMailer ufficiale vendorizzato — solo codice sorgente e licenza, vedi `FORM_SETUP.md` sezione PHPMailer per provenienza e verifica di integrità)
 - `robots.txt`, `sitemap.xml`, `CNAME` — inclusi **solo se già presenti** nel repository (oggi non esistono: nessuno di questi file viene generato automaticamente dal workflow)
 
 ## 9. File esclusi
@@ -109,12 +113,13 @@ Per costruzione (whitelist, non blacklist): tutto ciò che non è elencato al pu
 
 - `.git/`, `.github/`, `.claude/`, `.vscode/`
 - `PATCHLAB_MASTER/` (non esiste comunque nel repository pubblico)
+- `config/` (template e — se mai finisse per errore nel repository — configurazione reale del mailer: non serve al sito pubblico, vive solo sul server fuori da `public_html/`, vedi `FORM_SETUP.md`)
 - `copy-home.md`, `seo-keywords.md`, `site-structure.md`, `DEPLOY_SETUP.md`, `FORM_SETUP.md`, qualsiasi altro `*.md`
 - `README*`, `LICENSE*`
 - file temporanei, di log, backup, ZIP, RAW, PSD, AI, EPS
 - eventuali future cartelle `node_modules/`, `backup/`, `temp/`
 
-La verifica di sicurezza (step 4 del workflow) controlla attivamente l'assenza di `.md`, `PATCHLAB_MASTER`, `.github/.git/.claude` in `_release/` come rete di sicurezza aggiuntiva, non come unico meccanismo di esclusione.
+La verifica di sicurezza (step "Verifica di sicurezza su `_release/`") controlla attivamente l'assenza di `.md`, `.gitkeep`, `PATCHLAB_MASTER`, `.github/.git/.claude`, `config/` in `_release/`, oltre a un controllo per pattern di credenziali SMTP hardcoded nei file `.php` pubblicati — come rete di sicurezza aggiuntiva, non come unico meccanismo di esclusione.
 
 ## 10. Primo deploy
 
@@ -228,15 +233,18 @@ Il puntamento DNS di `patchlab.net` verso DominiOK non è stato modificato in qu
 
 ## 23. Gestione del form
 
-Vedi `FORM_SETUP.md` per lo stato del modulo preventivo, la soluzione adottata in questo sprint e i rischi aperti.
+Vedi `FORM_SETUP.md` per lo stato del modulo preventivo. Il form invia realmente le richieste via `api/invia-preventivo.php`, usando PHPMailer ufficiale (vendorizzato in `vendor/phpmailer/phpmailer/`, tag `v7.1.1`) per il canale SMTP verso Zoho — nessun client SMTP proprietario resta in produzione. L'unico passaggio operativo mancante è creare sul server il file `config/patchlab-mail.php` con le credenziali reali (`FORM_SETUP.md`, sezioni C-F) — finché non esiste, l'endpoint risponde con un errore controllato, mai un invio simulato.
 
 ## 24. Rischi e limitazioni note
 
 - ~~La directory remota (`server-dir: ./`) è configurata assumendo che l'account FTP entri già in `public_html/`~~ — **verificato in Sprint 11.1**: confermato, `deploy@patchlab.net` è radicato in `/home/patch864/public_html`. Nessuna azione necessaria.
 - ~~Il supporto FTPS esplicito sulla porta 21 da parte di DominiOK non è stato verificato~~ — **verificato in Sprint 11.1**: login, EPSV e apertura della connessione dati confermati nei log del primo deploy reale.
 - L'azione `SamKirkland/FTP-Deploy-Action` è una dipendenza di terze parti pinnata a `v4.4.0` (aggiornata in Sprint 11.1 da `v4.3.5`): eventuali aggiornamenti futuri vanno valutati e testati (idealmente con `dry_run: true`) prima di cambiare la versione pinnata.
-- Il modulo preventivo non invia ancora email reali (vedi `FORM_SETUP.md`): il deploy in produzione non risolve questo punto da solo.
-- Deliverability email (SPF/DKIM/DMARC per `info@patchlab.net`) non è stata verificata né modificata in questo sprint: resta una decisione separata di Stefano prima del lancio definitivo (vedi `FORM_SETUP.md`, sezione deliverability).
+- ~~Il modulo preventivo non invia ancora email reali~~ — **attivato**: invia via SMTP Zoho autenticato tramite `api/invia-preventivo.php`. Resta da creare manualmente il file di configurazione con le credenziali reali sul server (vedi `FORM_SETUP.md`).
+- Deliverability email (SPF/DKIM/DMARC per `info@patchlab.net`) non è stata verificata né modificata: ora che il form invia realmente, è un punto più urgente da verificare con Stefano prima del lancio definitivo (vedi `FORM_SETUP.md`, sezione 11).
+- ~~Il client SMTP di `api/invia-preventivo.php` è scritto ad hoc (non PHPMailer)~~ — **sostituito integralmente da PHPMailer ufficiale** (tag `v7.1.1`, provenienza e integrità verificate: vedi `FORM_SETUP.md`, sezione PHPMailer). Nessun protocollo SMTP proprietario resta in produzione.
+- ~~Non è stato possibile eseguire test PHP reali~~ — **risolto**: il workflow ora esegue `php -l` su tutti i file PHP e un test funzionale dell'endpoint (`tests/smoke-test.sh`) con un interprete PHP reale (`shivammathur/setup-php@2.37.2`) prima di ogni deploy, che lo interrompe se falliscono.
+- Il test funzionale in CI copre GET→405, campi mancanti/non validi→400, honeypot→429, invio troppo rapido→429, configurazione SMTP assente→500 controllato. **Non copre** — e non può coprire senza credenziali reali — l'invio effettivo tramite PHPMailer verso `smtp.zoho.eu`: quel percorso resta da verificare con il test end-to-end di `FORM_SETUP.md` sezione H, una volta creato il file di configurazione reale sul server.
 - Vedi sezione 24a per un incidente noto e risolto sul primo deploy reale, e la relativa strategia di fallback se il sintomo dovesse ripresentarsi su un file reale.
 
 ## 24a. Incidente Sprint 11.1 — fallimento sul primo upload FTPS

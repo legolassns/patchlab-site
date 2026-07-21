@@ -24,8 +24,9 @@ GitHub Actions — .github/workflows/deploy-production.yml
         │  1. checkout del commit esatto
         │  2. verifica presenza dei secrets richiesti
         │  3. costruzione di _release/ (whitelist esplicita dei file pubblici)
-        │  4. verifica di sicurezza su _release/ (niente .md, niente PATCHLAB_MASTER, niente .github/.git/.claude)
-        │  5. upload di _release/ via FTPS esplicito
+        │  4. rimozione dei file .gitkeep da _release/ (vedi sezione 24a)
+        │  5. verifica di sicurezza su _release/ (niente .md, niente .gitkeep, niente PATCHLAB_MASTER, niente .github/.git/.claude)
+        │  6. upload di _release/ via FTPS esplicito
         ▼
 DominiOK — cPanel — account FTP deploy@patchlab.net → public_html/
         ▼
@@ -37,8 +38,8 @@ GitHub Pages (`https://legolassns.github.io/patchlab-site/`) resta attivo in par
 ## 3. Prerequisiti
 
 - Account FTP dedicato `deploy@patchlab.net`, creato in cPanel, con home directory **limitata a `public_html/`** (non l'account cPanel principale).
-- Verifica preventiva (da fare una sola volta, manualmente, con un client FTP qualsiasi — es. FileZilla — prima di affidarsi al workflow): l'account `deploy@patchlab.net` entra già dentro `public_html/`? Se sì, la directory remota nel workflow è `./` (già configurata così). Se l'account atterra invece nella home cPanel generale (con `public_html/` come sottocartella visibile), la directory remota va cambiata in `./public_html/` sia nel workflow sia in questo documento.
-- Conferma che il server DominiOK supporta FTPS esplicito sulla porta 21 (lo stesso client FTP usato per la verifica sopra lo conferma: connessione "FTP over TLS/Explicit").
+- **Verificato (Sprint 11.1, test reale in FileZilla con TLS esplicito)**: l'account `deploy@patchlab.net` è già radicato in `/home/patch864/public_html`. La directory remota nel workflow resta quindi `server-dir: ./`, confermata corretta — non è più un'assunzione da verificare.
+- **Verificato (Sprint 11.1)**: il server DominiOK supporta FTPS esplicito sulla porta 21 (login, ingresso in `/`, EPSV e comando dati confermati nei log del primo deploy reale). Il fallimento osservato non riguardava protocollo/porta/percorso: vedi sezione 24a.
 
 ## 4. Account FTP dedicato
 
@@ -231,9 +232,30 @@ Vedi `FORM_SETUP.md` per lo stato del modulo preventivo, la soluzione adottata i
 
 ## 24. Rischi e limitazioni note
 
-- La directory remota (`server-dir: ./`) è configurata assumendo che l'account FTP entri già in `public_html/`. **Questa assunzione non è stata verificata da questa sessione** (nessun accesso al pannello DominiOK): va confermata manualmente prima del primo deploy reale (sezione 3).
-- Il supporto FTPS esplicito sulla porta 21 da parte di DominiOK non è stato verificato da questa sessione: va confermato con un client FTP prima di considerare affidabile il workflow.
-- L'azione `SamKirkland/FTP-Deploy-Action` è una dipendenza di terze parti pinnata a `v4.3.5`: eventuali aggiornamenti vanno valutati e testati (idealmente con `dry_run: true`) prima di cambiare la versione pinnata.
+- ~~La directory remota (`server-dir: ./`) è configurata assumendo che l'account FTP entri già in `public_html/`~~ — **verificato in Sprint 11.1**: confermato, `deploy@patchlab.net` è radicato in `/home/patch864/public_html`. Nessuna azione necessaria.
+- ~~Il supporto FTPS esplicito sulla porta 21 da parte di DominiOK non è stato verificato~~ — **verificato in Sprint 11.1**: login, EPSV e apertura della connessione dati confermati nei log del primo deploy reale.
+- L'azione `SamKirkland/FTP-Deploy-Action` è una dipendenza di terze parti pinnata a `v4.4.0` (aggiornata in Sprint 11.1 da `v4.3.5`): eventuali aggiornamenti futuri vanno valutati e testati (idealmente con `dry_run: true`) prima di cambiare la versione pinnata.
 - Il modulo preventivo non invia ancora email reali (vedi `FORM_SETUP.md`): il deploy in produzione non risolve questo punto da solo.
 - Deliverability email (SPF/DKIM/DMARC per `info@patchlab.net`) non è stata verificata né modificata in questo sprint: resta una decisione separata di Stefano prima del lancio definitivo (vedi `FORM_SETUP.md`, sezione deliverability).
+- Vedi sezione 24a per un incidente noto e risolto sul primo deploy reale, e la relativa strategia di fallback se il sintomo dovesse ripresentarsi su un file reale.
+
+## 24a. Incidente Sprint 11.1 — fallimento sul primo upload FTPS
+
+**Osservato**: nel primo deploy reale (fine Sprint 11), il dry run era stato completato correttamente. Il deploy reale raggiungeva il server, effettuava il login, entrava nella directory remota `/`, attivava EPSV, riceveva `150 Accepted data connection` — ma falliva al primissimo file trasferito, `assets/img/.gitkeep`, con l'errore:
+
+```
+Server sent FIN packet unexpectedly, closing connection.
+```
+
+**Causa tecnica più probabile**: `assets/img/.gitkeep` è un file da **0 byte**. Serve solo a Git per tracciare la cartella `assets/img/` quando altrimenti sarebbe vuota nel repository: non ha alcuna funzione una volta che la cartella contiene già le immagini reali, e non deve mai finire online. Alcuni server/implementazioni FTPS (incluso, con ogni evidenza, quello di DominiOK) chiudono la connessione dati in modo anomalo su un upload STOR di un file a lunghezza zero subito dopo l'apertura del canale dati — comportamento non standard ma non raro con determinate combinazioni client/server TLS. Non era né un problema di credenziali, né di percorso, né di protocollo: tutti e tre erano già confermati corretti (vedi sezione 3).
+
+**Correzione applicata (Sprint 11.1, 2026-07-20)**:
+1. Nuovo step "Rimuovi i file `.gitkeep` da `_release/`" (`find _release -type f -name ".gitkeep" -delete`), eseguito dopo la copia di `assets/` e `it/` e prima della verifica di sicurezza.
+2. La "Verifica di sicurezza su `_release/`" ora fallisce esplicitamente se un qualsiasi `.gitkeep` fosse comunque rimasto.
+3. L'`exclude` dello step di deploy FTP è stato rafforzato con `**/.gitkeep`, `**/.git*`, `**/.git*/**` come rete di sicurezza aggiuntiva (la whitelist e lo step di rimozione restano il meccanismo primario).
+4. Azione di deploy aggiornata a `SamKirkland/FTP-Deploy-Action@v4.4.0` (dalla `v4.3.5`), versione stabile corrente, senza cambiare protocollo, porta o directory remota.
+
+**Procedura di test successiva**: al prossimo push su `main`, il workflow si attiva automaticamente. Verificare nei log dello step "Deploy via FTPS esplicito" che il primo file trasferito sia ora un file reale (es. un `.jpeg` o `index.html`), non più `.gitkeep`, e che l'upload prosegua oltre il primo file senza l'errore FIN.
+
+**Strategia di fallback (solo documentale, non ancora attivata)**: se dopo questa correzione il deploy fallisce di nuovo con lo stesso errore FIN su un file **reale** e non vuoto (non più `.gitkeep`), non vanno tentate altre correzioni casuali sul workflow attuale. La linea d'azione prevista è aprire uno **Sprint 11.2** dedicato per sostituire `SamKirkland/FTP-Deploy-Action` con uno script basato su `lftp`, mantenendo: FTPS esplicito, modalità passiva, verifica del certificato, sincronizzazione a specchio (mirror) che non cancella file remoti esterni alla release. In quello scenario andranno preservati obbligatoriamente `zohoverify/`, `.well-known/` e `cgi-bin/` — non toccarli mai, né con lo script attuale né con un eventuale mirror lftp futuro.
 - GitHub Pages resta attivo in parallelo (sezione 21): due copie del sito esisteranno finché non si deciderà diversamente.

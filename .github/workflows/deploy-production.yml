@@ -100,6 +100,15 @@ jobs:
             fi
           done
 
+      - name: Rimuovi i file .gitkeep da _release/
+        run: |
+          set -e
+          # I .gitkeep servono solo a Git per tracciare cartelle altrimenti
+          # vuote (es. assets/img/.gitkeep) e sono file da 0 byte: non hanno
+          # alcuna funzione online e alcuni client FTP/TLS chiudono la
+          # connessione in modo anomalo su un primo upload a 0 byte.
+          find _release -type f -name ".gitkeep" -delete
+
       - name: Verifica di sicurezza su _release/
         run: |
           set -e
@@ -119,26 +128,33 @@ jobs:
             echo "::error::Cartelle di configurazione interne presenti in _release/."
             exit 1
           fi
+          if find _release -type f -name ".gitkeep" | grep -q .; then
+            echo "::error::Trovati file .gitkeep in _release/: non devono essere pubblicati."
+            exit 1
+          fi
           echo "Contenuto di _release/ pronto per il deploy:"
           find _release -maxdepth 2 | sort
 
       - name: Deploy via FTPS esplicito
         if: ${{ !inputs.dry_run }}
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.PATCHLAB_FTP_SERVER }}
           username: ${{ secrets.PATCHLAB_FTP_USERNAME }}
           password: ${{ secrets.PATCHLAB_FTP_PASSWORD }}
           port: ${{ secrets.PATCHLAB_FTP_PORT }}
           protocol: ftps
-          # L'account deploy@patchlab.net è già radicato in public_html:
-          # la document root del dominio è quindi "./", non "public_html/".
-          # Se una verifica futura mostra il contrario, aggiornare qui e in
-          # DEPLOY_SETUP.md, non altrove.
+          # L'account deploy@patchlab.net è già radicato in public_html
+          # (confermato: /home/patch864/public_html): la document root del
+          # dominio è quindi "./", non "public_html/". Non modificare senza
+          # una nuova verifica esplicita sul server.
           server-dir: ./
           local-dir: ./_release/
           log-level: verbose
           exclude: |
+            **/.gitkeep
+            **/.git*
+            **/.git*/**
             **/.DS_Store
             **/Thumbs.db
 

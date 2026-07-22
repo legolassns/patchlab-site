@@ -317,14 +317,8 @@ section + section { border-top: 1px solid var(--color-border); }
 .image-placeholder {
   width: 100%;
   aspect-ratio: 4 / 3;
-  background: repeating-linear-gradient(
-    45deg,
-    var(--color-white),
-    var(--color-white) 10px,
-    var(--color-bg-light) 10px,
-    var(--color-bg-light) 20px
-  );
-  border: 1px dashed var(--color-border);
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -419,6 +413,10 @@ section + section { border-top: 1px solid var(--color-border); }
   color: var(--color-gray);
   text-transform: none;
 }
+/* Marchio grafico PatchLab nell'header (Sprint estetico): la "P dinamica"
+   affianca il wordmark testuale esistente senza sostituirlo. */
+.logo-mark { height: 26px; width: auto; }
+.logo a:first-child { display: inline-flex; align-items: center; gap: 0.45rem; }
 .footer-brand .logo-sub { color: var(--color-on-dark-subtle); }
 
 .nav-panel {

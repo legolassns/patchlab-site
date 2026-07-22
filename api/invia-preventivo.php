@@ -220,7 +220,7 @@ function send_quote_email(array $config, $subject, $htmlBody, $textBody, $replyT
         $mail->SMTPAuth = true;
         $mail->Username = $config['smtp_user'];
         $mail->Password = $config['smtp_password'];
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = (int) $config['smtp_port'];
         $mail->CharSet = PHPMailer::CHARSET_UTF8;
         $mail->Timeout = 15;

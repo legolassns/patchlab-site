@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Quote for Custom Patches | PatchLab by Euroricami</title>
+<meta name="description" content="Fill in the form with your project details: patch type, quantity and timing. We'll get back to you with a technical assessment.">
+<link rel="canonical" href="https://patchlab.net/quote/">
+<link rel="alternate" hreflang="en" href="https://patchlab.net/quote/">
+<link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/">
+<link rel="alternate" hreflang="x-default" href="https://patchlab.net/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PatchLab by Euroricami">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Request a Quote for Custom Patches | PatchLab by Euroricami">
+<meta property="og:description" content="Fill in the form with your project details: patch type, quantity and timing. We'll get back to you with a technical assessment.">
+<meta property="og:url" content="https://patchlab.net/quote/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/logo/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../assets/img/logo/favicon-192.png">
+<link rel="apple-touch-icon" href="../assets/img/logo/apple-touch-icon.png">
+<link rel="stylesheet" href="../style.css"></head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <span class="logo"><a href="../"><img src="../assets/img/logo/patchlab-mark.png" alt="" class="logo-mark" width="240" height="147">PatchLab</a><a href="https://www.euroricami.it/" class="logo-sub" target="_blank" rel="noopener noreferrer" title="Visit the Euroricami website">by Euroricami</a></span>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-panel" id="nav-panel">
+      <nav class="main-nav">
+        <ul>
+          <li><a href="../patch-embroidered/">Embroidered Patches</a></li>
+          <li><a href="../patch-woven/">Woven HD</a></li>
+          <li><a href="../patch-pvc/">PVC Patches</a></li>
+          <li><a href="../patch-sublimated/">Sublimated</a></li>
+          <li><a href="../portfolio/">Portfolio</a></li>
+          <li><a href="../how-we-work/">How We Work</a></li>
+        </ul>
+      </nav>
+      <a href="../quote/" class="btn btn-accent header-cta">Request a quote</a>
+      <div class="lang-switch" aria-label="Language">
+        <span class="lang-current" aria-current="true">EN</span>
+        <span class="lang-switch-divider" aria-hidden="true">|</span>
+        <a href="../it/preventivo/" aria-label="Passa all'italiano">IT</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================================================
+       1. HEADER
+       ============================================================ -->
+  <section class="page-header">
+    <div class="container">
+      <span class="eyebrow">Quote</span>
+      <h1>Request a Quote</h1>
+      <p class="section-lead">We don't need precise details before understanding your project. Send us what you have: artwork, an approximate quantity and the intended use. We'll start from there.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. INTRO — WHAT WE NEED
+       ============================================================ -->
+  <section class="content-block">
+    <div class="container">
+      <div class="content-grid content-grid--top">
+        <div class="checklist-panel">
+          <h2 class="checklist-panel-title">What helps us prepare your proposal</h2>
+          <ul class="checklist-panel-list">
+            <li class="checklist-panel-item"><strong>Logo or artwork</strong> — vector (AI, EPS, PDF) or high resolution (300 dpi)</li>
+            <li class="checklist-panel-item"><strong>Approximate quantity</strong> — even a range (e.g. "between 100 and 200 pieces")</li>
+            <li class="checklist-panel-item"><strong>Desired dimensions</strong> — in millimetres or with a physical reference</li>
+            <li class="checklist-panel-item"><strong>Intended use</strong> — type of garment, material, environment of use</li>
+            <li class="checklist-panel-item"><strong>Approximate date of use</strong> — to assess timing</li>
+            <li class="checklist-panel-item"><strong>Application type</strong> — sew-on, iron-on, hook-and-loop, or to be defined</li>
+          </ul>
+          <p class="checklist-panel-note">Don't have all these details? No problem — send us what you have. We'll work out the rest together.</p>
+        </div>
+        <div class="method-note">
+          <div class="method-note-icon">?</div>
+          <div>
+            <span class="method-note-label">If you don't have all the details</span>
+            <h3 class="method-note-title">You can start with just an idea</h3>
+            <p class="method-note-text">You don't need precise dimensions, final quantities or finished artwork. You can send us a rough idea and an old patch to use as a reference.</p>
+            <p class="method-note-text">We're not an online configurator: we're a workshop, and we're the ones who'll ask the right questions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. FORM
+       ============================================================ -->
+  <section class="content-block">
+    <div class="container">
+      <form class="quote-form" id="quote-form" method="post" action="/api/invia-preventivo.php" novalidate>
+
+        <!-- Anti-spam honeypot field: hidden and out of the tab order for
+             keyboard/screen reader users (never filled in by a real person);
+             bots that fill in every field fill this one too and are
+             silently discarded by the server.
+             Field name kept in Italian ("sito-web"): the PHP endpoint
+             (api/invia-preventivo.php, shared with the Italian form) reads
+             this exact key server-side and is not modified by this sprint. -->
+        <div class="u-sr-only">
+          <label for="sito-web">Leave this field blank</label>
+          <input type="text" id="sito-web" name="sito-web" tabindex="-1" autocomplete="off">
+        </div>
+        <input type="hidden" id="ts-apertura" name="ts_apertura" value="">
+
+        <div class="form-field">
+          <label for="nome">Full name *</label>
+          <input type="text" id="nome" name="nome" required>
+        </div>
+
+        <div class="form-field">
+          <label for="azienda">Company / Organisation</label>
+          <input type="text" id="azienda" name="azienda">
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-field">
+          <label for="telefono">Phone</label>
+          <input type="tel" id="telefono" name="telefono">
+        </div>
+
+        <div class="form-field">
+          <label for="tipo-patch">Patch type *</label>
+          <select id="tipo-patch" name="tipo-patch" required>
+            <option value="">Select...</option>
+            <option value="ricamata">Embroidered</option>
+            <option value="woven-hd">Woven HD</option>
+            <option value="pvc">PVC</option>
+            <option value="sublimatica">Sublimated</option>
+            <option value="non-so">Not sure which to choose</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="applicazione">Application type</label>
+          <select id="applicazione" name="applicazione">
+            <option value="">To be assessed</option>
+            <option value="cucibile">Sew-on</option>
+            <option value="termosaldabile">Iron-on</option>
+            <option value="velcro">Hook-and-loop</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="quantita">Approximate quantity *</label>
+          <input type="text" id="quantita" name="quantita" placeholder="e.g. 200 pieces" required>
+        </div>
+
+        <div class="form-field full">
+          <label for="note">Describe your project</label>
+          <textarea id="note" name="note" rows="5" placeholder="Intended use, approximate dimensions, desired timing..."></textarea>
+        </div>
+
+        <div class="form-field full">
+          <button type="submit" class="btn btn-accent btn-lg btn-block" id="quote-form-submit">Send request</button>
+          <p class="form-note">Fields marked with * are required.</p>
+          <p class="form-note">We only use the information you provide to respond to your quote request, not for any other purpose.</p>
+          <div class="form-feedback" id="form-feedback" role="status" aria-live="polite"></div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. WHAT HAPPENS AFTER YOU SUBMIT
+       ============================================================ -->
+  <section class="section-light">
+    <div class="container container-narrow">
+      <span class="eyebrow">After you submit</span>
+      <h2>What happens after you submit your request</h2>
+      <p class="section-lead">No automatic reply, no generic quote. Five real steps.</p>
+      <div class="process-deep u-mt-48">
+        <div class="process-deep-step">
+          <div class="process-deep-num">01</div>
+          <div>
+            <span class="process-deep-label">Receipt</span>
+            <h3 class="process-deep-title">We read your request</h3>
+            <p class="process-deep-text">Your request is read by a person, not filtered by an automated system. If we're missing details we need to assess it, we'll write back with specific questions.</p>
+          </div>
+        </div>
+        <div class="process-deep-step">
+          <div class="process-deep-num">02</div>
+          <div>
+            <span class="process-deep-label">Analysis</span>
+            <h3 class="process-deep-title">We assess the artwork</h3>
+            <p class="process-deep-text">If you've already sent us an artwork file — even by email, as the form doesn't yet handle attachments — we analyse it against the requested dimensions: text legibility, colours, details. If you haven't sent it yet, we'll ask for it in our reply. If the file isn't suited to the chosen technique, we'll tell you before going ahead.</p>
+          </div>
+        </div>
+        <div class="process-deep-step">
+          <div class="process-deep-num">03</div>
+          <div>
+            <span class="process-deep-label">Proposal</span>
+            <h3 class="process-deep-title">We send you a proposal</h3>
+            <p class="process-deep-text">You'll receive a proposal with the recommended technique, price and timing. If the technique you requested isn't the most suitable for your project, we'll explain why — along with the alternatives.</p>
+          </div>
+        </div>
+        <div class="process-deep-step">
+          <div class="process-deep-num">04</div>
+          <div>
+            <span class="process-deep-label">Sample</span>
+            <h3 class="process-deep-title">We produce the sample</h3>
+            <p class="process-deep-text">After the proposal is approved, we produce the physical sample. We never start batch production before the sample has been approved.</p>
+          </div>
+        </div>
+        <div class="process-deep-step">
+          <div class="process-deep-num">05</div>
+          <div>
+            <span class="process-deep-label">Production</span>
+            <h3 class="process-deep-title">We produce and archive</h3>
+            <p class="process-deep-text">Production takes place after the sample is approved. Once finished, we archive the machine file and specifications to handle future reorders without starting from scratch.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo">PatchLab <a href="https://www.euroricami.it/" class="logo-sub" target="_blank" rel="noopener noreferrer" title="Visit the Euroricami website">by Euroricami</a></span>
+      <p>A vertical <a href="https://www.euroricami.it/" target="_blank" rel="noopener noreferrer" title="Visit the Euroricami website">Euroricami</a> project dedicated exclusively to custom patches: embroidered, Woven HD, PVC and sublimated, from sample to reorder.</p>
+    </div>
+    <div class="footer-links">
+      <h3>Techniques</h3>
+      <ul>
+        <li><a href="../patch-embroidered/">Embroidered patches</a></li>
+        <li><a href="../patch-woven/">Woven HD patches</a></li>
+        <li><a href="../patch-pvc/">PVC patches</a></li>
+        <li><a href="../patch-sublimated/">Sublimated patches</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h3>Backings</h3>
+      <ul>
+        <li><a href="../patch-hook-and-loop/">Hook-and-loop patches</a></li>
+        <li><a href="../patch-iron-on/">Iron-on patches</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h3>Method</h3>
+      <ul>
+        <li><a href="../how-we-work/">How we work</a></li>
+        <li><a href="../laboratory/">Laboratory</a></li>
+        <li><a href="../portfolio/">Portfolio</a></li>
+        <li><a href="../quote/">Request a quote</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact">
+      <h3>Contact</h3>
+      <p><a href="mailto:info@patchlab.net">info@patchlab.net</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <p>&copy; 2026 PatchLab by Euroricami. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="../main.js"></script>
+</body>
+</html>

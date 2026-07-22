@@ -53,10 +53,26 @@ function highlightActiveNavLink() {
 
 /* Form richiesta preventivo: validazione lato client + invio reale via
    fetch all'endpoint PHP (api/invia-preventivo.php). Il form non si
-   considera mai "inviato" finché il server non conferma con { ok: true }. */
+   considera mai "inviato" finché il server non conferma con { ok: true }.
+
+   L'endpoint PHP risponde sempre in italiano (Sprint EN/IT non tocca la
+   logica server-side): sulla pagina inglese sostituiamo il messaggio di
+   invio/esito con l'equivalente inglese invece di mostrare il testo
+   italiano restituito dal server. */
 function initQuoteForm() {
   var form = document.getElementById("quote-form");
   if (!form) return;
+
+  var isEnglish = document.documentElement.lang === "en";
+  var i18n = {
+    sending: isEnglish ? "Sending…" : "Invio in corso…",
+    success: isEnglish
+      ? "Thank you, we've received your request. We'll get back to you after reviewing the project."
+      : "Grazie, abbiamo ricevuto la tua richiesta. Ti risponderemo dopo aver valutato il progetto.",
+    genericError: isEnglish
+      ? "We couldn't send your request. Please try again or email info@patchlab.net."
+      : "Non siamo riusciti a inviare la richiesta. Puoi riprovare oppure scrivere a info@patchlab.net."
+  };
 
   var feedbackBox = document.getElementById("form-feedback");
   var submitButton = document.getElementById("quote-form-submit");
@@ -102,7 +118,7 @@ function initQuoteForm() {
     isSubmitting = submitting;
     if (!submitButton) return;
     submitButton.disabled = submitting;
-    submitButton.textContent = submitting ? "Invio in corso…" : submitButtonDefaultText;
+    submitButton.textContent = submitting ? i18n.sending : submitButtonDefaultText;
   }
 
   /* Rimuove lo stato di errore visivo non appena l'utente corregge il campo. */
@@ -167,20 +183,20 @@ function initQuoteForm() {
       })
       .then(function (result) {
         if (result.httpOk && result.data && result.data.ok) {
-          showFeedback("success", result.data.message || "Grazie, abbiamo ricevuto la tua richiesta. Ti risponderemo dopo aver valutato il progetto.");
+          showFeedback("success", isEnglish ? i18n.success : (result.data.message || i18n.success));
           form.reset();
           if (tsField) tsField.value = String(Date.now());
         } else {
-          var errorMessage = (result.data && result.data.message)
-            ? result.data.message
-            : "Non siamo riusciti a inviare la richiesta. Puoi riprovare oppure scrivere a info@patchlab.net.";
+          var errorMessage = isEnglish
+            ? i18n.genericError
+            : ((result.data && result.data.message) ? result.data.message : i18n.genericError);
           showFeedback("error", errorMessage);
         }
       })
       .catch(function () {
         /* Errore di rete o timeout: il form non viene resettato, i dati
            inseriti restano compilati per un nuovo tentativo. */
-        showFeedback("error", "Non siamo riusciti a inviare la richiesta. Puoi riprovare oppure scrivere a info@patchlab.net.");
+        showFeedback("error", i18n.genericError);
       })
       .finally(function () {
         if (timeoutId) clearTimeout(timeoutId);

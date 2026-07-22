@@ -25,6 +25,7 @@ require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
+use PHPMailer\PHPMailer\SMTP;
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
@@ -207,7 +208,7 @@ class SmtpException extends RuntimeException
 
 /**
  * Invia l'email della richiesta di preventivo via PHPMailer, SMTP autenticato
- * su Zoho Mail Europa con TLS implicito (porta 465).
+ * su Zoho Mail Europa con STARTTLS (porta 587).
  * Lancia SmtpException in caso di qualunque problema di connessione/invio.
  */
 function send_quote_email(array $config, $subject, $htmlBody, $textBody, $replyTo)
@@ -228,7 +229,7 @@ function send_quote_email(array $config, $subject, $htmlBody, $textBody, $replyT
 
         // Mai debug SMTP visibile o loggato: nessun dettaglio protocollo,
         // nessuna credenziale, nemmeno nei log del server.
-        $mail->SMTPDebug = 0;
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;
         $mail->Debugoutput = function () {
         };
 
@@ -466,10 +467,10 @@ try {
     send_quote_email($mailConfig, $subject, $htmlBody, $textBody, $email);
 } catch (SmtpException $e) {
     log_internal_error('smtp', $e->getMessage());
-    respond(500, false, $e->getMessage()); // DEBUG TEMPORANEO — ripristinare il messaggio generico prima del commit
+    respond(500, false, 'Non siamo riusciti a inviare la richiesta. Riprova oppure scrivi a info@patchlab.net.');
 } catch (Throwable $e) {
     log_internal_error('smtp-inatteso', $e->getMessage());
-    respond(500, false, $e->getMessage()); // DEBUG TEMPORANEO — ripristinare il messaggio generico prima del commit
+    respond(500, false, 'Non siamo riusciti a inviare la richiesta. Riprova oppure scrivi a info@patchlab.net.');
 }
 
 respond(200, true, 'Grazie, abbiamo ricevuto la tua richiesta. Ti risponderemo dopo aver valutato il progetto.');

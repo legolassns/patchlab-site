@@ -466,10 +466,10 @@ try {
     send_quote_email($mailConfig, $subject, $htmlBody, $textBody, $email);
 } catch (SmtpException $e) {
     log_internal_error('smtp', $e->getMessage());
-    respond(500, false, 'Non siamo riusciti a inviare la richiesta. Riprova oppure scrivi a info@patchlab.net.');
+    respond(500, false, $e->getMessage()); // DEBUG TEMPORANEO — ripristinare il messaggio generico prima del commit
 } catch (Throwable $e) {
     log_internal_error('smtp-inatteso', $e->getMessage());
-    respond(500, false, 'Non siamo riusciti a inviare la richiesta. Riprova oppure scrivi a info@patchlab.net.');
+    respond(500, false, $e->getMessage()); // DEBUG TEMPORANEO — ripristinare il messaggio generico prima del commit
 }
 
 respond(200, true, 'Grazie, abbiamo ricevuto la tua richiesta. Ti risponderemo dopo aver valutato il progetto.');

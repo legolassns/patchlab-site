@@ -124,9 +124,13 @@ jobs:
           rm -rf _release
           mkdir -p _release
 
-          # Solo i file e le cartelle elencati qui finiscono online.
-          # Aggiungere una nuova voce esplicitamente quando nasce un nuovo
-          # asset pubblico: non copiare mai l'intera root per esclusione.
+          # Solo i file e le cartelle elencati qui (e in EN_PAGE_DIRS più sotto)
+          # finiscono online. Aggiungere una nuova voce esplicitamente quando
+          # nasce un nuovo asset pubblico: non copiare mai l'intera root per
+          # esclusione.
+          # Nota: i *.html elencati qui sono i vecchi stub di redirect verso
+          # it/ (pre-Sprint EN/IT); le pagine inglesi reali vivono invece in
+          # cartelle dedicate, copiate dal blocco EN_PAGE_DIRS.
           PUBLIC_FILES="index.html patch-pvc.html patch-ricamate.html patch-sublimatiche.html patch-termosaldabili.html patch-velcro.html patch-woven.html portfolio.html preventivo.html style.css main.js"
 
           for f in $PUBLIC_FILES; do
@@ -146,6 +150,19 @@ jobs:
             mkdir -p _release/it
             cp -r it/. _release/it/
           fi
+
+          # Pagine inglesi alla radice (Sprint EN/IT): una cartella per
+          # pagina, ciascuna con il proprio index.html, allo stesso modo di
+          # it/. Aggiungere qui ogni nuova pagina inglese pubblicata.
+          EN_PAGE_DIRS="patch-embroidered patch-woven patch-pvc patch-sublimated patch-hook-and-loop patch-iron-on portfolio how-we-work laboratory quote"
+          for d in $EN_PAGE_DIRS; do
+            if [ -d "$d" ]; then
+              mkdir -p "_release/$d"
+              cp -r "$d/." "_release/$d/"
+            else
+              echo "::warning::Cartella pagina inglese attesa non trovata, saltata: $d"
+            fi
+          done
 
           # api/: endpoint PHP pubblico del modulo preventivo. Contiene solo
           # codice, mai credenziali: quelle vivono fuori dal repository (vedi

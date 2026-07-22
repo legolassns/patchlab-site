@@ -434,6 +434,7 @@ section + section { border-top: 1px solid var(--color-border); }
   color: var(--color-gray-dark);
   padding: 0.4rem 0;
   border-bottom: 2px solid transparent;
+  white-space: nowrap;
   transition: color var(--transition-base), border-color var(--transition-base);
 }
 .main-nav a:hover,
@@ -444,8 +445,20 @@ section + section { border-top: 1px solid var(--color-border); }
 }
 .header-cta { flex-shrink: 0; }
 
+/* Raggruppa CTA + switch linguistico in un unico figlio flex di .nav-panel
+   (fix regressione Sprint EN/IT): evita che l'aggiunta dello switch introduca
+   un secondo gap da --space-32 nel budget di larghezza della nav, che con le
+   etichette inglesi causava il wrap del menu su più righe. .nav-panel torna
+   ad avere esattamente 2 figli (nav + questo blocco), come nel design originale. */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  flex-shrink: 0;
+}
+
 /* Switch linguistico EN/IT (Sprint EN/IT): elemento tecnico minimo dentro
-   .nav-panel, non un figlio diretto di .header-inner — evita di alterare
+   .header-actions, non un figlio diretto di .header-inner — evita di alterare
    la distribuzione space-between di logo/nav-toggle/nav-panel sui viewport
    stretti. Visibile in linea su desktop, dentro il pannello aperto su mobile. */
 .lang-switch {
@@ -1857,6 +1870,11 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
   .site-header.nav-open .nav-panel { display: flex; }
   .site-header.nav-open .main-nav ul { flex-direction: column; gap: 0; }
   .site-header.nav-open .main-nav a { display: block; padding: 0.75rem 0; }
+  .site-header.nav-open .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-16);
+  }
   .site-header.nav-open .header-cta { text-align: center; }
   .site-header.nav-open .lang-switch {
     justify-content: center;

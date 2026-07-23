@@ -105,7 +105,8 @@ Whitelist esplicita usata nello step "Prepara `_release/`" (aggiornarla qui e ne
 - `it/` (intera cartella, tutte le pagine italiane)
 - `api/` (endpoint PHP del modulo preventivo — solo codice, mai credenziali: vedi `FORM_SETUP.md`)
 - `vendor/` (PHPMailer ufficiale vendorizzato — solo codice sorgente e licenza, vedi `FORM_SETUP.md` sezione PHPMailer per provenienza e verifica di integrità)
-- `robots.txt`, `sitemap.xml`, `CNAME` — inclusi **solo se già presenti** nel repository (oggi non esistono: nessuno di questi file viene generato automaticamente dal workflow)
+- `privacy/` (pagina privacy EN, aggiunta a `EN_PAGE_DIRS` il 2026-07-23 — MODE 6); `it/privacy/` è già inclusa automaticamente dalla copia integrale di `it/`
+- `robots.txt`, `sitemap.xml`, `CNAME` — inclusi **solo se già presenti** nel repository (dal 2026-07-23 `robots.txt` e `sitemap.xml` esistono e sono quindi pubblicati automaticamente da questa regola, senza bisogno di modificare il workflow; `CNAME` resta assente)
 
 ## 9. File esclusi
 
@@ -223,9 +224,20 @@ Questo pattern (checkout → whitelist esplicita in `_release/` → verifica di 
 ## 21. Differenza tra GitHub Pages e produzione DominiOK
 
 - **GitHub Pages** (`https://legolassns.github.io/patchlab-site/`): deploy temporaneo usato durante gli Sprint precedenti, attivato automaticamente da GitHub sulla base del branch pubblicato nelle impostazioni Pages del repository. Resta attivo e continuerà ad aggiornarsi ad ogni push, in parallelo, finché non verrà disattivato esplicitamente nelle impostazioni del repository.
-- **DominiOK** (`https://patchlab.net/`): ambiente di produzione definitivo, aggiornato dal workflow descritto in questo documento.
+- **DominiOK** (`https://patchlab.net/`): ambiente di produzione definitivo, aggiornato dal workflow descritto in questo documento. Dal 2026-07-23 la deliverability email è verificata operativa su questo ambiente (vedi sezione 24), rafforzando la sua idoneità come unica destinazione pubblica.
 - Le due destinazioni sono indipendenti: un fallimento del deploy FTPS non impedisce l'aggiornamento di GitHub Pages, e viceversa.
-- Decisione su quando/se disattivare GitHub Pages: da prendere con Stefano quando `patchlab.net` sarà considerato stabile in produzione (non decisa in questo sprint).
+- **Decisione strategica (2026-07-23, MODE 6)**: DominiOK (`patchlab.net`) deve diventare l'**unica fonte pubblica**; GitHub resta solo repository e CI/CD. La disattivazione di GitHub Pages **non è eseguibile da codice**: nessun file di questo repository controlla la pubblicazione Pages (verificato — nessun workflow dedicato, nessun branch `gh-pages` separato: `git ls-remote --heads origin` restituisce solo `main`). La pubblicazione è configurata esclusivamente in **Settings → Pages** del repository GitHub, un'area di impostazioni non modificabile da un intervento sul codice.
+
+### 21a. Procedura di disattivazione di GitHub Pages (da eseguire manualmente da chi ha accesso alle impostazioni del repository)
+
+1. Vai su `https://github.com/legolassns/patchlab-site` → tab **Settings** → sezione **Pages** (menu laterale, sotto "Code and automation").
+2. In **Build and deployment → Source**, seleziona **None** al posto di "Deploy from a branch" (oppure, se l'opzione disponibile è "disconnect"/rimuovi il branch pubblicato, usa quella).
+3. Salva. GitHub interrompe la pubblicazione automatica su `https://legolassns.github.io/patchlab-site/`; l'URL smette di rispondere (tipicamente entro pochi minuti, talvolta con un breve periodo di cache CDN residua).
+4. **Verifica post-disattivazione**: richiedi `https://legolassns.github.io/patchlab-site/` (es. `curl -I`) e conferma che non risponda più con `200`/`Server: GitHub.com` (atteso: 404 o nessuna risposta).
+5. **Controllo che `patchlab.net` resti online**: richiedi `https://patchlab.net/` e conferma `200 OK` — la disattivazione di Pages non deve avere alcun effetto su DominiOK, essendo le due destinazioni indipendenti per costruzione (vedi sopra).
+6. **Search Console (se applicabile)**: se `https://legolassns.github.io/patchlab-site/` risultasse indicizzato in passato, valutare in Google Search Console una richiesta di rimozione temporanea dell'URL o attendere la deindicizzazione naturale a seguito del 404; non è un passaggio bloccante.
+
+Questa procedura **non è stata eseguita** in questo intervento: nessun accesso alle impostazioni GitHub è stato usato o presupposto. Resta un'azione manuale in capo a chi amministra il repository.
 
 ## 22. Gestione del dominio
 
@@ -240,8 +252,8 @@ Vedi `FORM_SETUP.md` per lo stato del modulo preventivo. Il form invia realmente
 - ~~La directory remota (`server-dir: ./`) è configurata assumendo che l'account FTP entri già in `public_html/`~~ — **verificato in Sprint 11.1**: confermato, `deploy@patchlab.net` è radicato in `/home/patch864/public_html`. Nessuna azione necessaria.
 - ~~Il supporto FTPS esplicito sulla porta 21 da parte di DominiOK non è stato verificato~~ — **verificato in Sprint 11.1**: login, EPSV e apertura della connessione dati confermati nei log del primo deploy reale.
 - L'azione `SamKirkland/FTP-Deploy-Action` è una dipendenza di terze parti pinnata a `v4.4.0` (aggiornata in Sprint 11.1 da `v4.3.5`): eventuali aggiornamenti futuri vanno valutati e testati (idealmente con `dry_run: true`) prima di cambiare la versione pinnata.
-- ~~Il modulo preventivo non invia ancora email reali~~ — **attivato**: invia via SMTP Zoho autenticato tramite `api/invia-preventivo.php`. Resta da creare manualmente il file di configurazione con le credenziali reali sul server (vedi `FORM_SETUP.md`).
-- Deliverability email (SPF/DKIM/DMARC per `info@patchlab.net`) non è stata verificata né modificata: ora che il form invia realmente, è un punto più urgente da verificare con Stefano prima del lancio definitivo (vedi `FORM_SETUP.md`, sezione 11).
+- ~~Il modulo preventivo non invia ancora email reali~~ — **attivato**: invia via SMTP Zoho autenticato tramite `api/invia-preventivo.php`. Il file di configurazione con le credenziali reali è presente e operativo sul server (vedi `FORM_SETUP.md`).
+- ~~Deliverability email (SPF/DKIM/DMARC per `info@patchlab.net`) non è stata verificata~~ — **verificata operativamente dalla Direzione il 2026-07-23**: invio, ricezione, SPF, DKIM, DMARC e configurazione Zoho tutti confermati funzionanti (vedi `docs/SMTP_SETUP.md` §Verifica operativa end-to-end e `FORM_SETUP.md`, sezione 11). Verifica puntuale, non un monitoraggio continuo: da ripetere in caso di modifiche future a DNS, hosting o Zoho.
 - ~~Il client SMTP di `api/invia-preventivo.php` è scritto ad hoc (non PHPMailer)~~ — **sostituito integralmente da PHPMailer ufficiale** (tag `v7.1.1`, provenienza e integrità verificate: vedi `FORM_SETUP.md`, sezione PHPMailer). Nessun protocollo SMTP proprietario resta in produzione.
 - ~~Non è stato possibile eseguire test PHP reali~~ — **risolto**: il workflow ora esegue `php -l` su tutti i file PHP e un test funzionale dell'endpoint (`tests/smoke-test.sh`) con un interprete PHP reale (`shivammathur/setup-php@2.37.2`) prima di ogni deploy, che lo interrompe se falliscono.
 - Il test funzionale in CI copre GET→405, campi mancanti/non validi→400, honeypot→429, invio troppo rapido→429, configurazione SMTP assente→500 controllato. **Non copre** — e non può coprire senza credenziali reali — l'invio effettivo tramite PHPMailer verso `smtp.zoho.eu`: quel percorso resta da verificare con il test end-to-end di `FORM_SETUP.md` sezione H, una volta creato il file di configurazione reale sul server.

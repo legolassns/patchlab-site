@@ -30,8 +30,11 @@ return [
     // Host SMTP autenticato di Zoho Mail Europa.
     'smtp_host' => 'smtp.zoho.eu',
 
-    // Porta SSL/TLS implicito (non STARTTLS).
-    'smtp_port' => 465,
+    // Porta STARTTLS (upgrade a TLS dopo la connessione in chiaro).
+    // Valore verificato operativo in produzione il 2026-07-23 — vedi
+    // docs/SMTP_SETUP.md per la motivazione della scelta (587/STARTTLS,
+    // non 465/SMTPS) e la registrazione della verifica.
+    'smtp_port' => 587,
 
     // Username SMTP: normalmente coincide con l'indirizzo mittente.
     'smtp_user' => 'info@patchlab.net',

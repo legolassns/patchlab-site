@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Legacy redirect stubs (pre EN/IT launch): superseded by the real pages
+# under it/ (and, for EN, by the root and dedicated route directories).
+# Left online for backward compatibility with old links, but not meant
+# to be indexed as separate content.
+Disallow: /patch-pvc.html
+Disallow: /patch-ricamate.html
+Disallow: /patch-sublimatiche.html
+Disallow: /patch-termosaldabili.html
+Disallow: /patch-velcro.html
+Disallow: /patch-woven.html
+Disallow: /portfolio.html
+Disallow: /preventivo.html
+
+Sitemap: https://patchlab.net/sitemap.xml

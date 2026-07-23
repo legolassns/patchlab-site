@@ -154,7 +154,7 @@ jobs:
           # Pagine inglesi alla radice (Sprint EN/IT): una cartella per
           # pagina, ciascuna con il proprio index.html, allo stesso modo di
           # it/. Aggiungere qui ogni nuova pagina inglese pubblicata.
-          EN_PAGE_DIRS="patch-embroidered patch-woven patch-pvc patch-sublimated patch-hook-and-loop patch-iron-on portfolio how-we-work laboratory quote"
+          EN_PAGE_DIRS="patch-embroidered patch-woven patch-pvc patch-sublimated patch-hook-and-loop patch-iron-on portfolio how-we-work laboratory quote privacy"
           for d in $EN_PAGE_DIRS; do
             if [ -d "$d" ]; then
               mkdir -p "_release/$d"

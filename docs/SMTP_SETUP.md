@@ -10,7 +10,19 @@ Documenti correlati, più operativi: [`FORM_SETUP.md`](../FORM_SETUP.md) (form, 
 
 ## Scopo
 
-Il modulo preventivo di PatchLab (`it/preventivo/index.html`) invia le richieste dei clienti via email a `info@patchlab.net`. L'invio avviene lato server, tramite [PHPMailer](https://github.com/PHPMailer/PHPMailer) (libreria ufficiale, vendorizzata in `vendor/phpmailer/phpmailer/`, non tramite Composer — vedi `FORM_SETUP.md` per la motivazione), che parla il protocollo SMTP con un account autenticato su Zoho Mail.
+Il modulo preventivo di PatchLab (`it/preventivo/index.html`, e la sua versione inglese `quote/index.html`, condividono lo stesso endpoint) invia le richieste dei clienti via email a `info@patchlab.net`. L'invio avviene lato server, tramite [PHPMailer](https://github.com/PHPMailer/PHPMailer) (libreria ufficiale, vendorizzata in `vendor/phpmailer/phpmailer/`, non tramite Composer — vedi `FORM_SETUP.md` per la motivazione), che parla il protocollo SMTP con un account autenticato su Zoho Mail.
+
+## Verifica operativa end-to-end (2026-07-23)
+
+**Verificato operativamente dalla Direzione il 2026-07-23:**
+- invio reale del modulo preventivo;
+- ricezione effettiva del messaggio sulla casella `info@patchlab.net`;
+- record SPF valido per `patchlab.net`;
+- record DKIM configurato e attivo;
+- record DMARC configurato;
+- funzionamento della configurazione SMTP su Zoho (`config/patchlab-mail.php` presente e operativo sul server).
+
+Questa verifica conferma lo stato del canale email **alla data indicata**. Non è una garanzia permanente: qualunque modifica futura a DNS, hosting, provider email o alla configurazione Zoho richiede una nuova verifica. Nessun meccanismo di monitoraggio continuo della deliverability è oggi attivo (vedi `ANALYTICS_MEASUREMENT_PLAN.md` per lo stato della misurazione — la deliverability non rientra nel piano eventi, che riguarda il comportamento del sito, non la consegna email).
 
 ## Architettura
 
@@ -75,7 +87,7 @@ config/patchlab-mail.example.php
 
 Permessi consigliati sul file reale: `600` (lettura/scrittura solo per il proprietario). Procedura completa di creazione: `FORM_SETUP.md`, sezioni B-F.
 
-> **Nota per chi legge questo file in futuro**: il template `config/patchlab-mail.example.php` riporta ancora, come valore d'esempio, porta `465`/commento "SSL/TLS implicito" — un residuo di una fase precedente del progetto, prima che si stabilizzasse la configurazione descritta qui sopra. Il valore autorevole è **questo documento**: se aggiorni l'esempio, allinealo a `587`/STARTTLS.
+> **Nota di correzione (2026-07-23)**: il template `config/patchlab-mail.example.php` e il commento nel docblock di `api/invia-preventivo.php` riportavano ancora, come valore d'esempio, porta `465`/"SSL/TLS implicito" — un residuo di una fase precedente del progetto, prima che si stabilizzasse la configurazione descritta qui sopra (`587`/STARTTLS, verificata operativa il 2026-07-23). Entrambi sono stati allineati a questo documento nello stesso intervento che ha aggiunto questa nota. Il valore autorevole resta **questo documento**: qualunque futura modifica alla porta/cifratura va registrata qui per prima.
 
 ## Motivazione della scelta: STARTTLS + 587, non SMTPS + 465
 
@@ -149,11 +161,13 @@ Punto importante per questo documento: **il file di configurazione reale sul ser
 
 ## Checklist
 
-Prima di considerare il sistema di invio funzionante, verificare:
+Stato di verifica del sistema di invio (aggiornato 2026-07-23):
 
-- [ ] invio email completato senza errori
-- [ ] messaggio di successo mostrato correttamente nel form
-- [ ] risposta HTTP `200` con `{"ok": true, ...}` (verificabile da DevTools → Network)
-- [ ] nessun dettaglio SMTP (host, credenziali, stack trace) esposto nella risposta o nella UI
-- [ ] workflow GitHub Actions completato con esito positivo
-- [ ] credenziali SMTP assenti dal repository (nessun file tracciato, nessuna cronologia Git)
+- [x] invio email completato senza errori — verificato dalla Direzione il 2026-07-23
+- [x] messaggio di successo mostrato correttamente nel form — verificato dalla Direzione il 2026-07-23
+- [x] risposta HTTP `200` con `{"ok": true, ...}` — coerente con la verifica del 2026-07-23 (non ri-controllato da DevTools in questo intervento, dedotto dal successo end-to-end confermato)
+- [x] nessun dettaglio SMTP (host, credenziali, stack trace) esposto nella risposta o nella UI — garanzia strutturale del codice (`respond()`/`log_internal_error()`), verificata leggendo `api/invia-preventivo.php`
+- [x] workflow GitHub Actions completato con esito positivo — richiesto per ogni deploy su `main` (lint + smoke test bloccanti)
+- [x] credenziali SMTP assenti dal repository (nessun file tracciato, nessuna cronologia Git) — verificato per costruzione (`.gitignore`, nessun grep positivo su pattern di credenziali)
+
+Questa checklist attesta lo stato **alla data indicata**; non sostituisce un monitoraggio continuo (non presente oggi — vedi §Deliverability in `FORM_SETUP.md`).

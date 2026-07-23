@@ -4,11 +4,13 @@ Questo documento resta nel repository ma **non viene mai pubblicato online** (es
 
 ---
 
-## 0. Stato attuale: ATTIVO (dallo sprint di attivazione SMTP)
+## 0. Stato attuale: ATTIVO E VERIFICATO OPERATIVAMENTE (2026-07-23)
 
 Il modulo preventivo invia realmente le richieste a `info@patchlab.net` tramite SMTP autenticato su Zoho Mail Europa. Non è più nello stato "solo lato client" degli sprint precedenti.
 
-**Perché non serve prima abilitare nulla lato codice**: tutto il codice (endpoint PHP, JS, HTML, CSS) è già pronto e pubblicato. L'unico passaggio mancante è **operativo**: creare sul server il file di configurazione reale con le credenziali SMTP (sezione C). Finché quel file non esiste, l'endpoint risponde con un errore 500 controllato e onesto ("Servizio temporaneamente non disponibile") — non finge mai un invio riuscito.
+**Verificato operativamente dalla Direzione il 2026-07-23**: invio reale del form, ricezione effettiva su `info@patchlab.net`, SPF valido, DKIM attivo, DMARC configurato, configurazione Zoho operativa. Dettaglio completo in `docs/SMTP_SETUP.md` §Verifica operativa end-to-end. Questa verifica conferma lo stato **alla data indicata**: non è una garanzia permanente, resta soggetta a nuova verifica in caso di modifiche future a DNS, hosting o Zoho.
+
+**Perché non serve prima abilitare nulla lato codice**: tutto il codice (endpoint PHP, JS, HTML, CSS) è già pronto, pubblicato e verificato funzionante. Il file di configurazione reale con le credenziali SMTP (sezione C) è già presente e operativo sul server. Finché quel file non esiste o non è valido, l'endpoint risponde con un errore 500 controllato e onesto ("Servizio temporaneamente non disponibile") — non finge mai un invio riuscito.
 
 ---
 
@@ -22,10 +24,15 @@ Il modulo preventivo invia realmente le richieste a `info@patchlab.net` tramite 
 - `tests/smoke-test.sh` — test funzionale dell'endpoint (nessun invio email reale), eseguito in CI prima del deploy (vedi sezione "Test PHP in CI").
 
 **Modificati**:
-- `it/preventivo/index.html` — `method="post"` + `action="/api/invia-preventivo.php"` sul form (fallback se JS non esegue); campo honeypot (`sito-web`, visivamente nascosto ma presente nell'albero di accessibilità); campo nascosto `ts_apertura` (timestamp anti-bot); contenitore unico `#form-feedback` per i messaggi di successo/errore; testo privacy essenziale; corretta l'incoerenza che parlava di "file allegato" nella sezione "Cosa succede dopo l'invio" (il form non gestisce allegati in questa fase).
+- `it/preventivo/index.html` **e** `quote/index.html` — `method="post"` + `action="/api/invia-preventivo.php"` sul form (fallback se JS non esegue); campo honeypot (`sito-web`, visivamente nascosto ma presente nell'albero di accessibilità); campo nascosto `ts_apertura` (timestamp anti-bot); contenitore unico `#form-feedback` per i messaggi di successo/errore; testo privacy essenziale con link a `/privacy/` o `/it/privacy/` (aggiunto 2026-07-23, MODE 6 — in precedenza il testo era presente ma senza link, nessuna pagina privacy esisteva ancora); corretta l'incoerenza che parlava di "file allegato" nella sezione "Cosa succede dopo l'invio" (il form non gestisce allegati in questa fase). *(Nota: questa voce elencava in precedenza solo la pagina IT; la pagina EN condivide identica struttura e azione fin dallo stesso intervento — corretto qui il 2026-07-23 per completezza documentale.)*
 - `main.js` — `initQuoteForm()` riscritta: validazione client (campi obbligatori + formato email), invio via `fetch` con `FormData`, timeout di rete, bottone disabilitato con testo "Invio in corso…" durante l'invio, nessun reset del form prima di una conferma reale dal server, messaggi di successo/errore distinti, prevenzione doppio invio, rimozione dinamica degli errori visivi quando l'utente corregge un campo, focus sul messaggio di esito.
 - `style.css` — nuovi token `--color-danger-bg`/`--color-danger-border`; `.form-success` sostituita da `.form-feedback` con varianti `.form-feedback--success`/`.form-feedback--error` (riuso dei token `--color-success-*` già presenti e finora inutilizzati); stile per bottone disabilitato. Il campo honeypot riusa l'utility `.u-sr-only` già esistente, nessuna nuova classe per quello.
-- `.github/workflows/deploy-production.yml` — `api/` e `vendor/` aggiunte alla whitelist di `_release/`; verifica esplicita che `config/` non compaia mai in `_release/`; controllo pattern per credenziali SMTP hardcoded nei file PHP pubblicati; nuovi step "Setup PHP", lint PHP (`php -l`) e test funzionale dell'endpoint eseguiti **prima** del deploy, che lo interrompono se falliscono.
+- `.github/workflows/deploy-production.yml` — `api/` e `vendor/` aggiunte alla whitelist di `_release/`; verifica esplicita che `config/` non compaia mai in `_release/`; controllo pattern per credenziali SMTP hardcoded nei file PHP pubblicati; nuovi step "Setup PHP", lint PHP (`php -l`) e test funzionale dell'endpoint eseguiti **prima** del deploy, che lo interrompono se falliscono. Aggiornato ulteriormente il 2026-07-23 (MODE 6) per includere `privacy/` nella whitelist EN.
+
+**Creati (2026-07-23, MODE 6)**:
+- `privacy/index.html`, `it/privacy/index.html` — informativa privacy minima, collegata dal form e dal footer di tutte le pagine reali. Bozza di lavoro: contiene placeholder `[DA COMPLETARE DALLA DIREZIONE]` sui dati identificativi completi del titolare e sui tempi esatti di conservazione — non costituisce consulenza legale, richiede validazione finale della Direzione.
+- `robots.txt`, `sitemap.xml` — baseline SEO tecnica: 24 route reali (22 preesistenti + 2 pagine privacy), hreflang reciproco nel sitemap, stub legacy esclusi dall'indicizzazione.
+- `ANALYTICS_MEASUREMENT_PLAN.md` — specifica degli eventi di misurazione (nessuno strumento esterno introdotto: nessuna piattaforma di analytics era approvata al momento di questo intervento).
 
 ## B. Come creare una password per applicazione Zoho
 
@@ -133,15 +140,15 @@ Il form raccoglie dati identificativi (nome, azienda, email, telefono, note) e l
 
 ## 11. Deliverability
 
-Non modificato in questo intervento (nessuna modifica DNS/MX/SPF/DKIM/DMARC). Ora che il form invia realmente tramite SMTP Zoho, questo punto diventa più urgente da verificare con Stefano prima di considerare il canale pienamente affidabile in produzione:
+**Verificato operativamente dalla Direzione il 2026-07-23** (dettaglio in `docs/SMTP_SETUP.md` §Verifica operativa end-to-end):
 
-- record MX per `patchlab.net` (deve puntare a Zoho, se la casella è lì ospitata);
-- SPF che autorizzi `smtp.zoho.eu` come mittente per il dominio `patchlab.net`;
-- DKIM configurato per il dominio su Zoho;
-- DMARC coerente con SPF/DKIM;
-- test reale di arrivo in inbox (non spam) da più provider destinatari diversi (Gmail, Outlook, ecc.), non solo verso `info@patchlab.net` stesso.
+- invio reale del form e ricezione effettiva su `info@patchlab.net`;
+- SPF valido per `patchlab.net`;
+- DKIM configurato e attivo;
+- DMARC configurato;
+- configurazione SMTP Zoho operativa.
 
-Questa parte resta esplicitamente demandata a una decisione/verifica separata di Stefano.
+Questa verifica conferma lo stato **alla data indicata**, non una garanzia permanente: modifiche future a DNS, hosting o Zoho richiedono una nuova verifica. Non è stato introdotto alcun monitoraggio automatico e continuo della deliverability (nessuno era richiesto in questo intervento); un test periodico manuale resta una buona pratica raccomandata, non ancora programmata.
 
 ## 12. Evoluzioni future
 
@@ -179,8 +186,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 ```
 
-**Configurazione SMTP usata** (invariata rispetto a prima, solo il meccanismo di invio è cambiato):
-- `isSMTP()`, `Host = smtp.zoho.eu`, `SMTPAuth = true`, `SMTPSecure = PHPMailer::ENCRYPTION_SMTPS` (TLS implicito), `Port = 465`
+**Configurazione SMTP usata** (corretta il 2026-07-23: questa sezione riportava ancora `465`/SMTPS, valore superato — la configurazione realmente in uso e verificata operativa è `587`/STARTTLS, come da `docs/SMTP_SETUP.md`, fonte autorevole su questo punto):
+- `isSMTP()`, `Host = smtp.zoho.eu`, `SMTPAuth = true`, `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`, `Port = 587` (letta dal file di configurazione esterno)
 - `CharSet = PHPMailer::CHARSET_UTF8`, `Timeout = 15`, `SMTPKeepAlive = false`
 - `SMTPDebug = 0` e `Debugoutput` impostato a una funzione vuota: nessun dettaglio di protocollo o credenziale può mai comparire in output o nei log
 - `Username`/`Password` letti esclusivamente da `$mailConfig` (file esterno al repository, vedi sezioni C-F)

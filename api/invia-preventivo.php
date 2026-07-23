@@ -2,12 +2,15 @@
 /**
  * Endpoint del modulo preventivo PatchLab.
  *
- * Riceve i dati dal form in it/preventivo/index.html (fetch POST, FormData)
- * e li inoltra via email a info@patchlab.net tramite SMTP autenticato su
- * Zoho Mail Europa (smtp.zoho.eu:465, SSL/TLS implicito), usando PHPMailer
- * ufficiale (PHPMailer/PHPMailer, tag v7.1.1) vendorizzato in
+ * Riceve i dati dal form condiviso da it/preventivo/index.html (IT) e
+ * quote/index.html (EN) (fetch POST, FormData) e li inoltra via email a
+ * info@patchlab.net tramite SMTP autenticato su Zoho Mail Europa
+ * (smtp.zoho.eu:587, STARTTLS — porta/cifratura lette dal file di
+ * configurazione esterno, non hardcoded qui), usando PHPMailer ufficiale
+ * (PHPMailer/PHPMailer, tag v7.1.1) vendorizzato in
  * vendor/phpmailer/phpmailer/src/ — vedi FORM_SETUP.md per provenienza,
- * verifica di integrità e procedura di aggiornamento.
+ * verifica di integrità e procedura di aggiornamento, e docs/SMTP_SETUP.md
+ * per la verifica operativa end-to-end del canale (2026-07-23).
  *
  * Le credenziali SMTP non sono MAI in questo file: vengono lette a runtime
  * da un file di configurazione esterno al repository (vedi resolve_mail_config_path()).

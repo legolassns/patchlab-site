@@ -1417,6 +1417,11 @@ figure.has-caption .photo-frame { border-radius: var(--radius-md) var(--radius-m
 .gallery-item:nth-child(5) { grid-column: span 4; }
 .gallery-item:nth-child(6) { grid-column: span 4; }
 
+/* Variante a 4 elementi (Woven, sprint di rifinitura visiva): stessa griglia,
+   stesso hover, stesso photo-frame della variante a 6 — solo il 4° elemento
+   chiude a piena larghezza invece di lasciare vuoto lo spazio a destra. */
+.gallery-exhibit--four .gallery-item:nth-child(4) { grid-column: span 12; }
+
 /* Placeholder per slot non ancora fotografati */
 .gallery-placeholder {
   display: flex;

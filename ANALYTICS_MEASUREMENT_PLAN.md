@@ -2,9 +2,11 @@
 
 Questo documento resta nel repository ma **non viene mai pubblicato online**: è un file `.md`, escluso per costruzione dal deploy (whitelist esplicita in `.github/workflows/deploy-production.yml`, con verifica dedicata che blocca il deploy se un `.md` finisse in `_release/`).
 
-## Stato: SPECIFICA, NESSUNO STRUMENTO IMPLEMENTATO
+## Stato: IMPLEMENTATO (Plausible Analytics)
 
-Al 2026-07-23, nessuna piattaforma di misurazione (Google Analytics, Google Tag Manager, Plausible, Matomo, Cloudflare Web Analytics o altra) è approvata o configurata per PatchLab — verificato: nessun riferimento a queste piattaforme in nessun file HTML/JS del repository, nessuna decisione documentata in `DEPLOY_SETUP.md`/`FORM_SETUP.md`/`docs/SMTP_SETUP.md`. Questo documento è quindi **solo una specifica tecnica tracciabile degli eventi**: nessuno script esterno è stato introdotto in questo intervento. Se in futuro la direzione approva una piattaforma, l'implementazione dovrà rispettare esattamente questi eventi e questi divieti, aggiornando lo stato da `not implemented` a `implemented` evento per evento.
+Dal 2026-07-23 (MODE 6B), **Plausible Analytics** è integrato su tutte le 24 route reali del sito: script `<script defer data-domain="patchlab.net" src="https://plausible.io/js/script.js">` in ogni `<head>`, eventi custom cablati in `main.js` (funzioni `trackEvent()`, `initInteractionTracking()`, e la logica dentro `initQuoteForm()`). Dettaglio operativo completo (installazione, configurazione, manutenzione, estensione futura): [`docs/PLAUSIBLE_SETUP.md`](docs/PLAUSIBLE_SETUP.md). Questo documento resta il **contratto degli eventi**: cosa si misura, perché, e cosa è vietato — la fonte di verità sul *cosa*, non sul *come*.
+
+**Prerequisito operativo non eseguibile da questa sessione**: il dominio `patchlab.net` deve essere registrato come sito in un account Plausible (Cloud o self-hosted) perché gli eventi vengano effettivamente ricevuti e visibili in una dashboard — l'integrazione lato codice è completa e corretta indipendentemente da questo, ma senza un account Plausible configurato lo script si carica e le chiamate `plausible()` avvengono silenziosamente senza che nessuno le veda (nessun errore, nessuna rottura del sito — vedi `trackEvent()` in `main.js`, progettata per degradare in sicurezza). Stesso pattern già visto per `config/patchlab-mail.php` (SMTP): il codice è pronto, un passaggio account/configurazione resta da completare da chi ha accesso a quel servizio.
 
 ## Principio vincolante
 
@@ -22,17 +24,19 @@ Gli eventi descrivono **comportamento**, non **identità**.
 
 ## Eventi
 
-| Evento | Trigger | Pagina | Parametri ammessi | Dati vietati | Finalità | Priorità | Stato |
-|---|---|---|---|---|---|---|---|
-| `page_view` | Caricamento di qualunque pagina reale | Tutte | `path`, `lang` (en/it) | Tutti quelli sopra | Misurare traffico e provenienza per pagina/lingua | Alta | not implemented |
-| `quote_cta_click` | Click su un pulsante "Request a quote"/"Richiedi preventivo" (header, hero, CTA finale, card prodotto) | Tutte le pagine con CTA | `path` (pagina di origine), `cta_location` (es. `header`, `hero`, `final-cta`) | Tutti quelli sopra | Capire quali punti di ingresso generano più intenzione di conversione | Alta | not implemented |
-| `quote_form_view` | Caricamento di `/quote/` o `/it/preventivo/` | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Base per il tasso di conversione del form (view → submit) | Alta | not implemented |
-| `quote_form_start` | Primo focus su un campo del form (`focusin` sul primo campo interagito) | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Distinguere chi vede il form da chi inizia davvero a compilarlo | Media | not implemented |
-| `quote_form_submit` | `submit` del form **prima** della risposta del server (tentativo di invio) | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra, incluso qualunque campo del form | Misurare i tentativi di invio, incluso chi fallisce dopo | Alta | not implemented |
-| `quote_form_success` | Risposta server `{"ok": true}` (successo confermato, non solo submit) | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Misurare la conversione reale (unico evento che conta come lead acquisito) | Alta | not implemented |
-| `quote_form_error` | Risposta server `{"ok": false}` o errore di rete/timeout | `quote/`, `it/preventivo/` | `lang`, `error_kind` (es. `validation`, `server`, `network` — mai il messaggio testuale restituito dal server, che potrebbe in futuro cambiare formato) | Tutti quelli sopra, incluso il messaggio di errore testuale | Individuare punti di attrito tecnico nel funnel | Alta | not implemented |
-| `language_switch` | Click sul link EN/IT nell'header | Tutte | `from_lang`, `to_lang` | Tutti quelli sopra | Misurare l'uso reale del bilinguismo | Bassa | not implemented |
-| `mailto_click` | Click su un link `mailto:info@patchlab.net` (footer o altrove) | Tutte | `path` (pagina di origine) | Tutti quelli sopra | Misurare il canale di contatto alternativo al form | Bassa | not implemented |
+La pagina di origine **non è quasi mai passata come parametro custom**: Plausible la registra nativamente per ogni pageview e per ogni evento custom (la sua dashboard segmenta automaticamente per URL) — ripeterla come `props` sarebbe ridondante, non un requisito mancato. L'unica eccezione è `mailto_click`, dove `path` identifica esplicitamente da quale punto della pagina è partito il click (non il visitatore), scelta motivata riga per riga sotto.
+
+| Evento | Trigger | Pagina | Parametri effettivi (`props`) | Dati vietati | Finalità | Priorità | Stato | Implementazione |
+|---|---|---|---|---|---|---|---|---|
+| `page_view` | Caricamento di qualunque pagina reale | Tutte (24) | Nessuno — evento **nativo** di Plausible, non un `plausible()` custom | Tutti quelli sopra | Misurare traffico e provenienza per pagina/lingua (lingua desumibile dal path: root = EN, `/it/...` = IT) | Alta | **implemented** | Solo il tag `<script>` in ogni `<head>`; nessun codice in `main.js` |
+| `quote_cta_click` | Click su un link verso `quote/` o `preventivo/` (delega su `document`) | Tutte le pagine con CTA | `cta_location` (`header`, `hero`, `final-cta`, `footer`, `other`), `lang` | Tutti quelli sopra | Capire quali punti di ingresso generano più intenzione di conversione | Alta | **implemented** | `main.js`, `initInteractionTracking()` |
+| `quote_form_view` | Caricamento di `/quote/` o `/it/preventivo/` | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Base per il tasso di conversione del form (view → submit) | Alta | **implemented** | `main.js`, inizio di `initQuoteForm()` |
+| `quote_form_start` | Primo `focusin` su un campo qualunque del form | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Distinguere chi vede il form da chi inizia davvero a compilarlo | Media | **implemented** | `main.js`, `initQuoteForm()`, listener `{ once: true }` |
+| `quote_form_submit` | `submit` del form **dopo** la validazione client, **prima** della risposta del server (tentativo reale di invio) | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra, incluso qualunque campo del form | Misurare i tentativi di invio, incluso chi fallisce dopo | Alta | **implemented** | `main.js`, `initQuoteForm()`, dopo `setSubmitting(true)` |
+| `quote_form_success` | Risposta server `{"ok": true}` | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Misurare la conversione reale (unico evento che conta come lead acquisito) | Alta | **implemented** | `main.js`, `initQuoteForm()`, ramo di successo |
+| `quote_form_error` | Risposta server con `ok: false`/HTTP non-2xx (`error_kind: "server"`) oppure eccezione `fetch`/timeout (`error_kind: "network"`) | `quote/`, `it/preventivo/` | `lang`, `error_kind` (solo `server` o `network` — **mai** `validation`: un fallimento della validazione client blocca l'invio prima che questo evento possa scattare, per progettazione; mai il messaggio testuale del server) | Tutti quelli sopra, incluso il messaggio di errore testuale | Individuare punti di attrito tecnico nel funnel | Alta | **implemented** | `main.js`, `initQuoteForm()`, ramo di errore e blocco `.catch()` |
+| `language_switch` | Click su un link dentro `.lang-switch` (header, delega su `document`) | Tutte | `from_lang`, `to_lang` | Tutti quelli sopra | Misurare l'uso reale del bilinguismo | Bassa | **implemented** | `main.js`, `initInteractionTracking()` |
+| `mailto_click` | Click su un link `href="mailto:..."` (delega su `document`) | Tutte | `path` (`window.location.pathname` della pagina corrente — qui sì incluso perché identifica *dove* si trova il link cliccato, non il visitatore) | Tutti quelli sopra | Misurare il canale di contatto alternativo al form | Bassa | **implemented** | `main.js`, `initInteractionTracking()` |
 
 ## Cosa questo piano NON copre
 

@@ -4,7 +4,22 @@ document.addEventListener("DOMContentLoaded", function () {
   initMobileNav();
   highlightActiveNavLink();
   initQuoteForm();
+  initInteractionTracking();
 });
+
+/* Invia un evento custom a Plausible (script caricato via <script defer>
+   in ogni pagina, vedi docs/PLAUSIBLE_SETUP.md). Silenzioso e senza mai
+   generare un errore JS se lo script non è disponibile (blocco pubblicità,
+   rete lenta, dominio non ancora registrato in Plausible): l'assenza di
+   misurazione non deve mai rompere il sito.
+   Nessun parametro passato qui contiene mai dati personali o contenuto
+   del form: solo lingua, posizione, percorso e tipo di esito — vedi
+   ANALYTICS_MEASUREMENT_PLAN.md per l'elenco esaustivo degli eventi e dei
+   divieti. */
+function trackEvent(name, props) {
+  if (typeof window.plausible !== "function") return;
+  window.plausible(name, props ? { props: props } : undefined);
+}
 
 /* Menu mobile a comparsa */
 function initMobileNav() {
@@ -51,6 +66,47 @@ function highlightActiveNavLink() {
   });
 }
 
+/* Tracciamento di interazione (CTA preventivo, cambio lingua, click su
+   mailto): un solo listener delegato su document, registrato una volta
+   sola all'avvio — non per-elemento, per evitare N listener duplicati e
+   qualunque rischio di doppio invio dello stesso evento. Ogni click
+   corrisponde al più a una categoria (i tre `if` sono in cascata con
+   `return`), quindi non può mai generare due eventi per un solo click. */
+function initInteractionTracking() {
+  document.addEventListener("click", function (event) {
+    var quoteLink = event.target.closest('a[href$="quote/"], a[href$="preventivo/"]');
+    if (quoteLink) {
+      /* Nome deliberatamente diverso da "location" per non ombreggiare
+         window.location nello scope di questa funzione (var è hoisted
+         a livello di funzione, non di blocco). */
+      var ctaLocation = "other";
+      if (quoteLink.closest(".site-header")) {
+        ctaLocation = "header";
+      } else if (quoteLink.closest(".hero")) {
+        ctaLocation = "hero";
+      } else if (quoteLink.closest(".cta-preventivo")) {
+        ctaLocation = "final-cta";
+      } else if (quoteLink.closest(".site-footer")) {
+        ctaLocation = "footer";
+      }
+      trackEvent("quote_cta_click", { cta_location: ctaLocation, lang: document.documentElement.lang });
+      return;
+    }
+
+    var langLink = event.target.closest(".lang-switch a");
+    if (langLink) {
+      var fromLang = document.documentElement.lang === "en" ? "en" : "it";
+      trackEvent("language_switch", { from_lang: fromLang, to_lang: fromLang === "en" ? "it" : "en" });
+      return;
+    }
+
+    var mailtoLink = event.target.closest('a[href^="mailto:"]');
+    if (mailtoLink) {
+      trackEvent("mailto_click", { path: window.location.pathname });
+    }
+  });
+}
+
 /* Form richiesta preventivo: validazione lato client + invio reale via
    fetch all'endpoint PHP (api/invia-preventivo.php). Il form non si
    considera mai "inviato" finché il server non conferma con { ok: true }.
@@ -81,6 +137,19 @@ function initQuoteForm() {
 
   var submitButtonDefaultText = submitButton ? submitButton.textContent : "";
   var isSubmitting = false;
+  var langProp = isEnglish ? "en" : "it";
+
+  /* quote_form_view: una sola volta per caricamento pagina (questa
+     funzione stessa gira una sola volta per pagina, protetta dal
+     `return` iniziale se #quote-form non esiste). */
+  trackEvent("quote_form_view", { lang: langProp });
+
+  /* quote_form_start: il primo focus su un campo qualunque del form,
+     una sola volta per pagina (`{ once: true }` rimuove il listener
+     dopo il primo trigger, nessun flag manuale necessario). */
+  form.addEventListener("focusin", function () {
+    trackEvent("quote_form_start", { lang: langProp });
+  }, { once: true });
 
   /* Timestamp di apertura del form, usato lato server come controllo
      anti-bot (un invio arrivato dopo pochissimi secondi è sospetto). */
@@ -160,6 +229,7 @@ function initQuoteForm() {
 
     setSubmitting(true);
     clearFeedback();
+    trackEvent("quote_form_submit", { lang: langProp });
 
     var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
     var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 15000) : null;
@@ -183,10 +253,12 @@ function initQuoteForm() {
       })
       .then(function (result) {
         if (result.httpOk && result.data && result.data.ok) {
+          trackEvent("quote_form_success", { lang: langProp });
           showFeedback("success", isEnglish ? i18n.success : (result.data.message || i18n.success));
           form.reset();
           if (tsField) tsField.value = String(Date.now());
         } else {
+          trackEvent("quote_form_error", { lang: langProp, error_kind: "server" });
           var errorMessage = isEnglish
             ? i18n.genericError
             : ((result.data && result.data.message) ? result.data.message : i18n.genericError);
@@ -196,6 +268,7 @@ function initQuoteForm() {
       .catch(function () {
         /* Errore di rete o timeout: il form non viene resettato, i dati
            inseriti restano compilati per un nuovo tentativo. */
+        trackEvent("quote_form_error", { lang: langProp, error_kind: "network" });
         showFeedback("error", i18n.genericError);
       })
       .finally(function () {

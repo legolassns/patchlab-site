@@ -108,6 +108,8 @@ Whitelist esplicita usata nello step "Prepara `_release/`" (aggiornarla qui e ne
 - `privacy/` (pagina privacy EN, aggiunta a `EN_PAGE_DIRS` il 2026-07-23 — MODE 6); `it/privacy/` è già inclusa automaticamente dalla copia integrale di `it/`
 - `robots.txt`, `sitemap.xml`, `CNAME` — inclusi **solo se già presenti** nel repository (dal 2026-07-23 `robots.txt` e `sitemap.xml` esistono e sono quindi pubblicati automaticamente da questa regola, senza bisogno di modificare il workflow; `CNAME` resta assente)
 
+Dal 2026-07-23 (MODE 6B), ogni pagina HTML pubblicata (24 route reali, whitelist sopra) include anche il tag di Plausible Analytics nel proprio `<head>` — non è un file separato da aggiungere alla whitelist, è già parte del contenuto di ciascun file HTML. Nessuna modifica al workflow di deploy è stata necessaria. Dettaglio: `docs/PLAUSIBLE_SETUP.md`.
+
 ## 9. File esclusi
 
 Per costruzione (whitelist, non blacklist): tutto ciò che non è elencato al punto 8 resta fuori da `_release/`, incluso ma non limitato a:

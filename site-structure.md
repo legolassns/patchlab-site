@@ -38,6 +38,7 @@ patch-personalizzate-euroricami/
 - Le immagini reali vivono in `assets/img/` (non più `images/`): eventuali nuove foto vanno aggiunte lì, con nomi file SEO-friendly (es. `patch-<lavorazione>-<soggetto>.jpg`).
 - Il form in `preventivo.html` è solo lato client: valida i campi obbligatori e mostra un messaggio di conferma, ma **non invia ancora dati a nessun servizio**. Va collegato a un endpoint reale (form-to-email, CRM, backend interno) prima della pubblicazione.
 - Colori, spaziature e font sono definiti come variabili CSS in cima a `style.css` (`:root`): da lì si modifica la palette in un punto solo.
+- **Misurazione (dal 2026-07-23)**: ogni pagina reale include il tag di Plausible Analytics (cookieless, nessun dato personale) e `main.js` genera gli eventi custom del funnel di conversione. Dettaglio completo: `docs/PLAUSIBLE_SETUP.md` e `ANALYTICS_MEASUREMENT_PLAN.md`.
 
 ## Prossimi passi suggeriti
 

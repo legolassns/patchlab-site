@@ -16,6 +16,7 @@ Dal 2026-07-23 (MODE 6B), **Plausible Analytics** è integrato su tutte le 24 ro
 - email
 - telefono
 - azienda
+- data di utilizzo indicativa (campo `data-utilizzo`, aggiunto al form nel MODE 6C)
 - note / contenuto della richiesta
 - indirizzo IP applicativo
 - qualunque identificatore che permetta di risalire a una persona fisica

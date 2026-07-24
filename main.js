@@ -84,6 +84,8 @@ function initInteractionTracking() {
         ctaLocation = "header";
       } else if (quoteLink.closest(".hero")) {
         ctaLocation = "hero";
+      } else if (quoteLink.closest(".cta-soft")) {
+        ctaLocation = "mid-page";
       } else if (quoteLink.closest(".cta-preventivo")) {
         ctaLocation = "final-cta";
       } else if (quoteLink.closest(".site-footer")) {

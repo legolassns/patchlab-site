@@ -39,6 +39,7 @@ const MAX_LEN_AZIENDA = 150;
 const MAX_LEN_EMAIL = 254;
 const MAX_LEN_TELEFONO = 40;
 const MAX_LEN_QUANTITA = 100;
+const MAX_LEN_DATA_UTILIZZO = 100;
 const MAX_LEN_NOTE = 4000;
 
 const MIN_SECONDS_TO_FILL_FORM = 3; // sotto questa soglia: probabile bot
@@ -383,6 +384,7 @@ try {
     $azienda = read_simple_field('azienda', MAX_LEN_AZIENDA, false);
     $telefono = read_simple_field('telefono', MAX_LEN_TELEFONO, false);
     $quantita = read_simple_field('quantita', MAX_LEN_QUANTITA, true);
+    $dataUtilizzo = read_simple_field('data-utilizzo', MAX_LEN_DATA_UTILIZZO, false);
     $note = read_note_field();
     $tipoPatch = read_enum_field('tipo-patch', TIPO_PATCH_AMMESSI, true);
     $applicazione = read_enum_field('applicazione', APPLICAZIONE_AMMESSE, false);
@@ -436,6 +438,7 @@ $textLines[] = 'Telefono: ' . ($telefono !== '' ? $telefono : '(non indicato)');
 $textLines[] = 'Tipologia patch: ' . $labelTipoPatch[$tipoPatch];
 $textLines[] = 'Applicazione: ' . $labelApplicazione[$applicazione];
 $textLines[] = 'Quantità indicativa: ' . $quantita;
+$textLines[] = 'Data di utilizzo indicativa: ' . ($dataUtilizzo !== '' ? $dataUtilizzo : '(non indicata)');
 $textLines[] = '';
 $textLines[] = 'Descrizione progetto:';
 $textLines[] = ($note !== '' ? $note : '(nessuna nota aggiuntiva)');
@@ -461,6 +464,7 @@ $htmlBody = '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"></head><
     . '<tr><td><strong>Tipologia patch</strong></td><td>' . $escape($labelTipoPatch[$tipoPatch]) . '</td></tr>'
     . '<tr><td><strong>Applicazione</strong></td><td>' . $escape($labelApplicazione[$applicazione]) . '</td></tr>'
     . '<tr><td><strong>Quantità indicativa</strong></td><td>' . $escape($quantita) . '</td></tr>'
+    . '<tr><td><strong>Data di utilizzo indicativa</strong></td><td>' . ($dataUtilizzo !== '' ? $escape($dataUtilizzo) : '(non indicata)') . '</td></tr>'
     . '</table>'
     . '<p><strong>Descrizione progetto</strong><br>' . $noteHtml . '</p>'
     . '<p style="color:#7d7f84; font-size:12px;">Provenienza: modulo sito PatchLab (it/preventivo/).</p>'

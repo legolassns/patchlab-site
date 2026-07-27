@@ -12,37 +12,60 @@ Decisione a monte (non presa qui): Plausible è stato scelto dalla direzione dop
 
 ## 1. Cos'è stato installato
 
-Un solo tag script, identico su tutte le 24 route reali del sito (le 8 pagine legacy di redirect in root **non** lo includono, per scelta: non fanno parte del funnel misurato, sono già escluse dall'indicizzazione via `robots.txt`):
+Uno **snippet unico, identico su tutte le 30 route reali** del sito. È lo snippet ufficiale fornito da Plausible al momento della registrazione del sito, e sostituisce integralmente l'integrazione precedente — un singolo tag `<script defer>` che caricava il file generico di Plausible e identificava il sito con l'attributo `data-domain`. Quel tag **non è più presente in nessun file del repository**.
 
 ```html
-<script defer data-domain="patchlab.net" src="https://plausible.io/js/script.js"></script>
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-GZufIkbU_YAkYX2J4B55w.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
 ```
 
-Caratteristiche di questo script (comportamento di Plausible per progettazione, non una configurazione nostra):
+### 1.1 Regole di installazione — non negoziabili
+
+1. **Una sola volta per pagina.** Lo snippet comprende *due* `<script>`: il caricamento del file remoto e l'inizializzazione. Vanno insieme, e la coppia va inserita una volta sola. Due copie sullo stesso documento significano due pageview per visita, cioè un denominatore gonfiato su ogni KPI di conversione.
+2. **Immediatamente prima di `</head>`.** Non a metà dell'`<head>`, non accodato alla riga del CSS, non in fondo al `<body>`. La posizione uniforme è ciò che rende verificabile con un solo controllo automatico che tutte le pagine siano tracciate allo stesso modo.
+3. **Mai l'attributo `data-domain`.** Non serve e non va aggiunto: il sito è già identificato dall'ID dentro il nome del file (`pa-GZufIkbU_YAkYX2J4B55w.js`). Se trovi un tag Plausible con l'attributo `data-domain`, è un residuo della vecchia integrazione e va rimosso.
+4. **Mai sulle pagine legacy con meta refresh** (`patch-pvc.html`, `patch-ricamate.html`, `patch-sublimatiche.html`, `patch-termosaldabili.html`, `patch-velcro.html`, `patch-woven.html`, `portfolio.html`, `preventivo.html` in root). Non è una dimenticanza: quelle pagine rimandano via `<meta http-equiv="refresh">` alla pagina reale. Tracciarle produrrebbe **due pageview per una sola visita** — uno per lo stub, uno per la destinazione — falsando il denominatore del Lead Conversion Rate, il KPI più importante del sito. Sono inoltre già escluse dall'indicizzazione via `robots.txt` e non fanno parte del funnel misurato.
+
+### 1.2 Caratteristiche dello snippet
+
+- **ID specifico del sito**: il nome del file (`pa-GZufIkbU_YAkYX2J4B55w.js`) identifica *questo* sito nell'account Plausible. **Non è riutilizzabile su un altro dominio**: copiarlo altrove attribuirebbe quel traffico a PatchLab. Un nuovo sito richiede un nuovo snippet generato da Plausible.
+- **`async`**: il caricamento non blocca il rendering della pagina (nessun impatto percepibile sulle performance o sul Core Web Vital LCP).
+- **Coda degli eventi**: il secondo `<script>` definisce `window.plausible` come funzione che accumula le chiamate in `plausible.q` finché il file remoto non è caricato. Conseguenza pratica: un evento generato prima del caricamento **non viene perso**, viene accodato e inviato dopo. È un miglioramento rispetto all'integrazione precedente, dove un evento anticipato veniva scartato.
+- **Pageview automatico**: la chiamata `plausible.init()` nello snippet attiva il tracciamento automatico del pageview. Per questo `page_view` non ha alcuna implementazione in `main.js` (vedi `ANALYTICS_MEASUREMENT_PLAN.md`).
 - **Cookieless**: non imposta alcun cookie, non usa `localStorage` per identificare il visitatore tra sessioni.
 - **Nessun fingerprinting persistente**: Plausible calcola un identificatore giornaliero non riconducibile a un individuo (hash di IP + user agent + dominio + salt che ruota ogni giorno), mai salvato, mai esposto.
-- **`defer`**: il caricamento non blocca il rendering della pagina (nessun impatto percepibile sulle performance o sul Core Web Vital LCP).
-- **Pageview automatico**: ogni caricamento di pagina con questo script genera un evento `pageview` nativo in Plausible, senza bisogno di codice aggiuntivo — per questo `page_view` (RFC eventi) non ha alcuna implementazione in `main.js` (vedi `ANALYTICS_MEASUREMENT_PLAN.md`).
 
-## 2. Prerequisito operativo — NON eseguito da questa sessione
+## 2. Prerequisito operativo — COMPLETATO
 
-**Il dominio `patchlab.net` deve essere registrato come sito in un account Plausible** (piano Cloud su plausible.io, oppure un'istanza self-hosted — la decisione tra le due resta della direzione, il tag script sopra funziona identico in entrambi i casi cambiando solo, se self-hosted, l'URL `src`) prima che gli eventi vengano effettivamente ricevuti e visibili in una dashboard.
+**Il dominio `patchlab.net` è stato registrato come sito in un account Plausible** (dichiarazione della Direzione, 2026-07-27). Lo snippet di §1 è quello generato da Plausible al termine di quella registrazione: l'ID nel nome del file è la prova che il sito esiste nell'account. Questo chiude il prerequisito che era rimasto aperto dal MODE 6B.
 
-Questo passaggio richiede credenziali di un account che non sono disponibili in questa sessione — esattamente come la creazione di `config/patchlab-mail.php` per l'SMTP (`FORM_SETUP.md`). Finché non è completato:
-- Il sito **continua a funzionare normalmente**: lo script si carica, le chiamate a `window.plausible(...)` vengono eseguite dal codice, ma non hanno alcun effetto visibile (Plausible scarta silenziosamente gli eventi per un dominio non registrato, o — se lo script stesso non risponde — la funzione `trackEvent()` in `main.js` verifica `typeof window.plausible !== "function"` e non fa nulla).
-- **Nessun errore JavaScript** viene generato in nessuno dei due casi.
+Cronologia, perché resti leggibile a chi arriva dopo:
 
-### Procedura di attivazione (da eseguire da chi ha accesso a un account Plausible)
+| Data | Stato |
+|---|---|
+| 2026-07-23 (MODE 6B) | Tag generico con attributo `data-domain` installato sulle 24 route allora esistenti. **Nessun account Plausible registrato**: gli eventi partivano e venivano scartati |
+| 2026-07-27 (MODE 6D) | Route portate a 30, script generico presente anche sulle 6 pagine nuove |
+| 2026-07-27 (questo intervento) | Sito registrato in Plausible; **snippet generico sostituito** su tutte e 30 le route con lo snippet specifico del sito. Da qui i dati arrivano davvero in dashboard |
 
-1. Creare (o usare) un account su [plausible.io](https://plausible.io) o predisporre un'istanza self-hosted.
-2. Aggiungere un nuovo sito con dominio esatto `patchlab.net`.
-3. Non è necessaria alcuna modifica al codice: lo script è già in produzione dal deploy di questo intervento (verificare comunque che l'URL `src` corrisponda al piano scelto — `plausible.io/js/script.js` per il Cloud, un URL diverso se self-hosted, vedi §5).
-4. Verificare nella dashboard Plausible, entro pochi minuti da una visita reale al sito, che compaiano: un pageview e — visitando `/quote/` o `/it/preventivo/` e interagendo col form — gli eventi custom elencati in `ANALYTICS_MEASUREMENT_PLAN.md`.
-5. Se si usa il piano gratuito/Community o un tier senza breakdown delle proprietà personalizzate degli eventi, leggere la nota di copertura KPI in §6 prima di considerare "risolti" tutti i KPI del piano di misurazione.
+### Verifica di attivazione (da eseguire alla prima visita reale dopo il deploy)
+
+1. Aprire la dashboard Plausible del sito `patchlab.net`.
+2. Visitare una pagina qualunque del sito pubblico e verificare che il **pageview** compaia entro pochi minuti.
+3. Visitare `/quote/` o `/it/preventivo/` e interagire col form: verificare che compaiano gli eventi custom elencati in `ANALYTICS_MEASUREMENT_PLAN.md` (`quote_form_view`, `quote_form_start`, e — su un invio reale — `quote_form_submit` e `quote_form_success`).
+4. Verificare che il conteggio dei pageview **non sia doppio** su una singola visita: sarebbe il sintomo di uno snippet duplicato in pagina (§1.1, regola 1) o del tracciamento erroneo di una pagina legacy (regola 4).
+5. Se il piano attivo non include il breakdown delle proprietà personalizzate degli eventi, leggere la nota di copertura KPI in §6 prima di considerare "risolti" tutti i KPI del piano di misurazione.
+
+Se un giorno lo script non fosse raggiungibile (blocco pubblicitario, rete, disservizio), il sito **continua a funzionare normalmente**: `trackEvent()` in `main.js` degrada in sicurezza e non genera alcun errore JavaScript. Nota: con il nuovo snippet la guardia `typeof window.plausible !== "function"` è soddisfatta già prima del caricamento del file remoto (lo stub di coda è una funzione), quindi gli eventi vengono accodati invece che scartati — vedi §1.2.
 
 ## 3. Eventi custom — dove vivono nel codice
 
 Tutta la logica è in `main.js` (nessuna dipendenza esterna, nessun bundler):
+
+**La logica degli eventi custom non è cambiata con la migrazione dello snippet**: `main.js` non è stato modificato. Continua a chiamare `window.plausible(name, { props })`, che è l'interfaccia esposta identica dal nuovo snippet — l'unica differenza è che ora le chiamate anticipate vengono accodate invece che perse (§1.2).
 
 | Funzione | Cosa fa | Eventi generati |
 |---|---|---|
@@ -60,14 +83,17 @@ Tutta la logica è in `main.js` (nessuna dipendenza esterna, nessun bundler):
 
 ## 4. Cosa NON è mai inviato a Plausible
 
-Vincolo assoluto, verificato riga per riga in `main.js` durante questo intervento: nessuna chiamata a `trackEvent()` referenzia mai `nome`, `azienda`, `email`, `telefono`, `note`, il contenuto di `tipo-patch`/`applicazione`/`quantita`, o l'indirizzo IP del visitatore. Gli unici valori passati come `props` in tutto il codice sono: `lang`/`from_lang`/`to_lang` (`"en"`/`"it"`), `cta_location` (una stringa fissa tra `header`/`hero`/`final-cta`/`footer`/`other`), `error_kind` (`"server"`/`"network"`), `path` (solo per `mailto_click`, il percorso della pagina — mai un dato del visitatore). Nessun valore proviene da un campo del form.
+Vincolo assoluto, verificato riga per riga in `main.js` durante questo intervento: nessuna chiamata a `trackEvent()` referenzia mai `nome`, `azienda`, `email`, `telefono`, `note`, il contenuto di `tipo-patch`/`applicazione`/`quantita`, o l'indirizzo IP del visitatore. Gli unici valori passati come `props` in tutto il codice sono: `lang`/`from_lang`/`to_lang` (`"en"`/`"it"`), `cta_location` (una stringa fissa tra `header`/`hero`/`mid-page`/`final-cta`/`footer`/`other`), `error_kind` (`"server"`/`"network"`), `path` (solo per `mailto_click`, il percorso della pagina — mai un dato del visitatore). Nessun valore proviene da un campo del form.
 
 ## 5. Manutenzione
 
-- **Aggiornare la versione dello script**: Plausible versiona il proprio script lato server; l'URL `src="https://plausible.io/js/script.js"` punta sempre alla versione corrente, non serve aggiornarla manualmente lato PatchLab.
-- **Rotazione verso self-hosted**: se in futuro si migrasse da Plausible Cloud a un'istanza self-hosted, l'unica modifica necessaria è l'URL `src` nelle 24 pagine (stesso meccanismo di ricerca-e-sostituzione già usato in questo intervento per aggiungere il tag) e, se l'istanza self-hosted usa un dominio diverso da quello di default, l'attributo `data-api` (non necessario con la configurazione attuale).
-- **Nuova pagina reale aggiunta al sito**: aggiungere lo stesso tag `<script>` nel suo `<head>`, seguendo esattamente il pattern delle altre 24 pagine (nessuna variazione per profondità di percorso: l'URL dello script è assoluto).
-- **Il tag NON va aggiunto** alle pagine di redirect legacy (`patch-pvc.html` e affini in root): non fanno parte del funnel misurato.
+- **Aggiornare la versione dello script**: non serve. Plausible versiona il proprio script lato server; l'URL punta sempre alla versione corrente per questo sito.
+- **Nuova pagina reale aggiunta al sito**: copiare lo snippet di §1 **integralmente** (entrambi i `<script>`) nel suo `<head>`, immediatamente prima di `</head>`, rispettando le quattro regole di §1.1. Nessuna variazione per profondità di percorso: l'URL dello script è assoluto, quindi lo snippet è identico in `index.html` e in `it/guide/scegliere-la-patch-giusta/index.html`.
+- **Lo snippet NON va aggiunto** alle pagine di redirect legacy (`patch-pvc.html` e affini in root): §1.1, regola 4.
+- **Non aggiungere `data-domain`**: §1.1, regola 3. Il sito è identificato dall'ID nel nome del file.
+- **Non riusare questo snippet su un altro sito**: l'ID è specifico di `patchlab.net`; su un dominio diverso attribuirebbe quel traffico a PatchLab. Un nuovo sito richiede uno snippet nuovo generato da Plausible.
+- **Rotazione verso self-hosted**: se in futuro si migrasse da Plausible Cloud a un'istanza self-hosted, servirebbe rigenerare lo snippet dall'istanza e sostituirlo su tutte e 30 le pagine (stesso meccanismo di ricerca-e-sostituzione già usato in questo intervento), non una semplice modifica dell'URL.
+- **Verifica automatica dopo qualunque modifica allo snippet**: controllare su tutte le route reali che l'ID del sito compaia **una sola volta**, che `plausible.init()` compaia **una sola volta**, che lo snippet sia **immediatamente prima di `</head>`**, e che non esista alcun residuo del vecchio file generico di Plausible né dell'attributo `data-domain`.
 
 ## 6. Copertura KPI — verifica onesta, nessun workaround inventato
 
@@ -80,7 +106,7 @@ Verifica di ciascun KPI proposto in `PATCHLAB_MEASUREMENT_STRATEGY.md` (reposito
 | Form Completion Rate | **Sì, direttamente** | `quote_form_submit` ÷ `quote_form_start`: entrambi eventi custom, rapporto diretto, non richiede attribuzione cross-pagina |
 | Form Success Rate | **Sì, direttamente** | `quote_form_success` ÷ `quote_form_submit`, stesso motivo |
 | Page Conversion Rate (per pagina tecnica) | **Parzialmente — limite reale, non un workaround** | Plausible, per progettazione privacy-first, non espone il percorso individuale di un singolo visitatore tra pagine diverse (nessun ID persistente). Attribuire una conversione avvenuta su `/quote/` a una specifica pagina tecnica visitata prima richiede la funzione Funnels (che modella sequenze di pagine su base statistica aggregata, non un vero join per-visitatore) o l'esportazione via Stats API con logica di sessione personalizzata. **Senza queste, il KPI così come definito in astratto non è calcolabile con precisione**: l'unico dato robusto disponibile è il traffico per pagina (nativo) incrociato con gli eventi CTA/form in modo aggregato temporale, non attribuito |
-| CTA Click-Through Rate per posizione | **Sì, con un limite di piano** | `quote_cta_click` con prop `cta_location` è implementato e funzionante; la *scomposizione* per valore di proprietà personalizzata (vedere il breakdown per `header` vs `hero` vs `final-cta` nella dashboard) è disponibile nei piani Plausible con supporto alle "custom properties" (non nel piano Community/free più essenziale) — da verificare al momento della scelta del piano |
+| CTA Click-Through Rate per posizione | **Sì, con un limite di piano** | `quote_cta_click` con prop `cta_location` è implementato e funzionante; la *scomposizione* per valore di proprietà personalizzata (vedere il breakdown per `header` vs `hero` vs `mid-page` vs `final-cta` nella dashboard) è disponibile nei piani Plausible con supporto alle "custom properties" (non nel piano Community/free più essenziale) — da verificare al momento della scelta del piano |
 | Trend pre/post modifica | **Sì, pienamente** | Nessun limite: è un confronto temporale sullo stesso KPI aggregato, che Plausible mostra nativamente per intervallo di date; la correlazione con i deploy avviene tramite la Deployment Timeline (repository `euroricami-ai-os`, `observability/deployment-timeline/`), non tramite Plausible stesso |
 | Proxy efficacia foto | Sì, pienamente | Stesso meccanismo del trend pre/post — era già definito come proxy, non come misura diretta |
 | LCR per lingua | **Sì, pienamente** | Le pagine EN e IT vivono su percorsi distinti (root vs `/it/...`); Plausible segmenta nativamente per URL, nessuna proprietà custom necessaria |

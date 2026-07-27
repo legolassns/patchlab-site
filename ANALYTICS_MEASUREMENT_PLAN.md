@@ -4,9 +4,22 @@ Questo documento resta nel repository ma **non viene mai pubblicato online**: è
 
 ## Stato: IMPLEMENTATO (Plausible Analytics)
 
-Dal 2026-07-23 (MODE 6B), **Plausible Analytics** è integrato su tutte le 24 route reali del sito: script `<script defer data-domain="patchlab.net" src="https://plausible.io/js/script.js">` in ogni `<head>`, eventi custom cablati in `main.js` (funzioni `trackEvent()`, `initInteractionTracking()`, e la logica dentro `initQuoteForm()`). Dettaglio operativo completo (installazione, configurazione, manutenzione, estensione futura): [`docs/PLAUSIBLE_SETUP.md`](docs/PLAUSIBLE_SETUP.md). Questo documento resta il **contratto degli eventi**: cosa si misura, perché, e cosa è vietato — la fonte di verità sul *cosa*, non sul *come*.
+**Plausible Analytics** è integrato su tutte le **30 route reali** del sito. Dal 2026-07-27 lo snippet installato è quello ufficiale generato da Plausible alla registrazione del sito:
 
-**Prerequisito operativo non eseguibile da questa sessione**: il dominio `patchlab.net` deve essere registrato come sito in un account Plausible (Cloud o self-hosted) perché gli eventi vengano effettivamente ricevuti e visibili in una dashboard — l'integrazione lato codice è completa e corretta indipendentemente da questo, ma senza un account Plausible configurato lo script si carica e le chiamate `plausible()` avvengono silenziosamente senza che nessuno le veda (nessun errore, nessuna rottura del sito — vedi `trackEvent()` in `main.js`, progettata per degradare in sicurezza). Stesso pattern già visto per `config/patchlab-mail.php` (SMTP): il codice è pronto, un passaggio account/configurazione resta da completare da chi ha accesso a quel servizio.
+```html
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-GZufIkbU_YAkYX2J4B55w.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+```
+
+Va inserito **una sola volta per pagina, immediatamente prima di `</head>`**, **senza** l'attributo `data-domain` (il sito è identificato dall'ID nel nome del file), e **mai** sulle 8 pagine legacy di redirect in root: tracciarle produrrebbe due pageview per una sola visita, falsando il denominatore di ogni tasso di conversione. Regole complete e motivate: [`docs/PLAUSIBLE_SETUP.md`](docs/PLAUSIBLE_SETUP.md) §1.1.
+
+Gli eventi custom sono cablati in `main.js` (funzioni `trackEvent()`, `initInteractionTracking()`, e la logica dentro `initQuoteForm()`) e **non sono cambiati** con la migrazione dello snippet: l'interfaccia `window.plausible(name, { props })` è identica. Dettaglio operativo completo (installazione, configurazione, manutenzione, estensione futura): [`docs/PLAUSIBLE_SETUP.md`](docs/PLAUSIBLE_SETUP.md). Questo documento resta il **contratto degli eventi**: cosa si misura, perché, e cosa è vietato — la fonte di verità sul *cosa*, non sul *come*.
+
+**Prerequisito operativo: completato.** Il dominio `patchlab.net` è registrato come sito in un account Plausible (dichiarazione della Direzione, 2026-07-27) — è la registrazione che ha generato lo snippet sopra. Dal deploy di quella modifica gli eventi arrivano davvero in dashboard. Fino a quel momento l'integrazione lato codice era completa e corretta, ma le chiamate `plausible()` avvenivano senza che nessuno le vedesse. Storico in `docs/PLAUSIBLE_SETUP.md` §2.
 
 ## Principio vincolante
 
@@ -29,8 +42,8 @@ La pagina di origine **non è quasi mai passata come parametro custom**: Plausib
 
 | Evento | Trigger | Pagina | Parametri effettivi (`props`) | Dati vietati | Finalità | Priorità | Stato | Implementazione |
 |---|---|---|---|---|---|---|---|---|
-| `page_view` | Caricamento di qualunque pagina reale | Tutte (24) | Nessuno — evento **nativo** di Plausible, non un `plausible()` custom | Tutti quelli sopra | Misurare traffico e provenienza per pagina/lingua (lingua desumibile dal path: root = EN, `/it/...` = IT) | Alta | **implemented** | Solo il tag `<script>` in ogni `<head>`; nessun codice in `main.js` |
-| `quote_cta_click` | Click su un link verso `quote/` o `preventivo/` (delega su `document`) | Tutte le pagine con CTA | `cta_location` (`header`, `hero`, `final-cta`, `footer`, `other`), `lang` | Tutti quelli sopra | Capire quali punti di ingresso generano più intenzione di conversione | Alta | **implemented** | `main.js`, `initInteractionTracking()` |
+| `page_view` | Caricamento di qualunque pagina reale | Tutte (30) | Nessuno — evento **nativo** di Plausible, non un `plausible()` custom | Tutti quelli sopra | Misurare traffico e provenienza per pagina/lingua (lingua desumibile dal path: root = EN, `/it/...` = IT) | Alta | **implemented** | Solo lo snippet in ogni `<head>` (il pageview è attivato da `plausible.init()`); nessun codice in `main.js` |
+| `quote_cta_click` | Click su un link verso `quote/` o `preventivo/` (delega su `document`) | Tutte le pagine con CTA | `cta_location` (`header`, `hero`, `mid-page`, `final-cta`, `footer`, `other`), `lang` | Tutti quelli sopra | Capire quali punti di ingresso generano più intenzione di conversione | Alta | **implemented** | `main.js`, `initInteractionTracking()` |
 | `quote_form_view` | Caricamento di `/quote/` o `/it/preventivo/` | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Base per il tasso di conversione del form (view → submit) | Alta | **implemented** | `main.js`, inizio di `initQuoteForm()` |
 | `quote_form_start` | Primo `focusin` su un campo qualunque del form | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Distinguere chi vede il form da chi inizia davvero a compilarlo | Media | **implemented** | `main.js`, `initQuoteForm()`, listener `{ once: true }` |
 | `quote_form_submit` | `submit` del form **dopo** la validazione client, **prima** della risposta del server (tentativo reale di invio) | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra, incluso qualunque campo del form | Misurare i tentativi di invio, incluso chi fallisce dopo | Alta | **implemented** | `main.js`, `initQuoteForm()`, dopo `setSubmitting(true)` |

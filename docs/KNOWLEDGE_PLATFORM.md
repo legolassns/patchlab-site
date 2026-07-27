@@ -39,7 +39,18 @@ Da eseguire **interamente**: saltare un punto produce una pagina che esiste in l
 1. **Crea la coppia EN + IT.** Una pagina senza controparte rompe la parità `hreflang` del sito. Se il contenuto per una lingua non è pronto, non pubblicare nemmeno l'altra.
 2. **Copia l'intero `<head>` da una pagina di conoscenza esistente** e adatta: `title`, `description`, `canonical`, i tre `hreflang` (`it`, `en`, `x-default`), gli `og:*`, i percorsi relativi di favicon/CSS.
    - `x-default` punta sempre alla versione **inglese** (l'inglese è la lingua di default del sito, EN vive alla radice).
-   - Il tag Plausible va incluso: `<script defer data-domain="patchlab.net" src="https://plausible.io/js/script.js"></script>`. Senza, la pagina è invisibile alla misurazione.
+   - Lo snippet Plausible va incluso **integralmente** (entrambi i `<script>`), **una sola volta**, **immediatamente prima di `</head>`**, e **senza** l'attributo `data-domain`. Senza di esso la pagina è invisibile alla misurazione; duplicato, produce due pageview per visita e falsa ogni tasso di conversione. Copialo da una pagina di conoscenza esistente o da `docs/PLAUSIBLE_SETUP.md` §1 — è identico su ogni pagina, a qualunque profondità di percorso, perché l'URL dello script è assoluto:
+
+     ```html
+     <!-- Privacy-friendly analytics by Plausible -->
+     <script async src="https://plausible.io/js/pa-GZufIkbU_YAkYX2J4B55w.js"></script>
+     <script>
+       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+       plausible.init()
+     </script>
+     ```
+
+     Vale per le pagine reali. Le pagine legacy con `<meta http-equiv="refresh">` in root non vanno mai tracciate, perché genererebbero due pageview per una sola visita (`docs/PLAUSIBLE_SETUP.md` §1.1, regola 4).
 3. **Copia header e footer** da una pagina di conoscenza dello stesso livello di profondità (i percorsi relativi cambiano con la profondità: `../`, `../../`, `../../../`) e correggi il link del `lang-switch` verso la controparte nell'altra lingua.
 4. **JSON-LD**: `Article` + `BreadcrumbList` per una guida, `CollectionPage` per un hub, `DefinedTermSet` per un glossario. Riusa il nodo `Organization` con `@id` `https://patchlab.net/#organization` invece di ridefinirlo. Ogni affermazione nel markup deve corrispondere al contenuto visibile della pagina.
 5. **`sitemap.xml`**: aggiungi entrambe le route, ciascuna con i tre `xhtml:link` reciproci.

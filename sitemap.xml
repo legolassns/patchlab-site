@@ -145,6 +145,46 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/"/>
   </url>
 
+  <!-- Knowledge Platform: hub delle guide, pillar page, glossario -->
+  <url>
+    <loc>https://patchlab.net/guides/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/guides/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/guide/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/guides/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/it/guide/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/guides/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/guide/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/guides/"/>
+  </url>
+
+  <url>
+    <loc>https://patchlab.net/guides/choosing-the-right-patch/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/guides/choosing-the-right-patch/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/guide/scegliere-la-patch-giusta/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/guides/choosing-the-right-patch/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/it/guide/scegliere-la-patch-giusta/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/guides/choosing-the-right-patch/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/guide/scegliere-la-patch-giusta/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/guides/choosing-the-right-patch/"/>
+  </url>
+
+  <url>
+    <loc>https://patchlab.net/glossary/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/glossario/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/glossary/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/it/glossario/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/glossario/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/glossary/"/>
+  </url>
+
   <url>
     <loc>https://patchlab.net/privacy/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/privacy/"/>

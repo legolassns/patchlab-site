@@ -154,7 +154,11 @@ jobs:
           # Pagine inglesi alla radice (Sprint EN/IT): una cartella per
           # pagina, ciascuna con il proprio index.html, allo stesso modo di
           # it/. Aggiungere qui ogni nuova pagina inglese pubblicata.
-          EN_PAGE_DIRS="patch-embroidered patch-woven patch-pvc patch-sublimated patch-hook-and-loop patch-iron-on portfolio how-we-work laboratory quote privacy"
+          # `guides` e `glossary` sono le radici inglesi della Knowledge
+          # Platform: `guides` contiene anche le sottocartelle delle singole
+          # guide (es. guides/choosing-the-right-patch/), copiate insieme
+          # dalla `cp -r` sotto — non serve elencarle una per una.
+          EN_PAGE_DIRS="patch-embroidered patch-woven patch-pvc patch-sublimated patch-hook-and-loop patch-iron-on portfolio how-we-work laboratory quote privacy guides glossary"
           for d in $EN_PAGE_DIRS; do
             if [ -d "$d" ]; then
               mkdir -p "_release/$d"

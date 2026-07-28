@@ -1436,8 +1436,17 @@ figure.has-caption .photo-frame { border-radius: var(--radius-md) var(--radius-m
   background: #b3afb0;
 }
 .gallery-exhibit--four .gallery-item:nth-child(4) .photo-frame picture { display: contents; }
+/* Questo selettore (0,4,1) è volutamente più specifico dello zoom di hover
+   condiviso dalla gallery — .gallery-item:hover img e .photo-frame:hover img,
+   entrambi (0,2,1) — che ingrandiva del 4% il crop approvato e, con
+   overflow: hidden sul contenitore, ne mostrava solo la porzione centrale.
+   Qui il fotogramma deve restare fedele al file: nessuno zoom, nessun taglio. */
 .gallery-exhibit--four .gallery-item:nth-child(4) .photo-frame img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  object-position: center center;
+  transform: none;
 }
 /* Sotto i 560px la griglia scende a 1 colonna: senza questo override lo
    span 12 (più specifico della regola generica grid-column: 1) trascinava

@@ -1422,6 +1422,30 @@ figure.has-caption .photo-frame { border-radius: var(--radius-md) var(--radius-m
    chiude a piena larghezza invece di lasciare vuoto lo spazio a destra. */
 .gallery-exhibit--four .gallery-item:nth-child(4) { grid-column: span 12; }
 
+/* Slot panoramico (4° elemento della variante a 4): ospita un crop
+   editoriale approvato a mano che va mostrato sempre integralmente.
+   Il fotogramma abbandona il 4:3 e riempie la cella; object-fit: contain
+   impedisce qualsiasi ritaglio e l'eventuale margine residuo resta dello
+   stesso grigio del fondale fotografico, quindi non produce fasce visibili. */
+.gallery-exhibit--four .gallery-item:nth-child(4) figure,
+.gallery-exhibit--four .gallery-item:nth-child(4) .photo-frame {
+  height: 100%;
+}
+.gallery-exhibit--four .gallery-item:nth-child(4) .photo-frame {
+  aspect-ratio: auto;
+  background: #b3afb0;
+}
+.gallery-exhibit--four .gallery-item:nth-child(4) .photo-frame picture { display: contents; }
+.gallery-exhibit--four .gallery-item:nth-child(4) .photo-frame img {
+  object-fit: contain;
+}
+/* Sotto i 560px la griglia scende a 1 colonna: senza questo override lo
+   span 12 (più specifico della regola generica grid-column: 1) trascinava
+   11 gap di colonne implicite e faceva traboccare lo slot oltre il viewport. */
+@media (max-width: 560px) {
+  .gallery-exhibit--four .gallery-item:nth-child(4) { grid-column: 1; }
+}
+
 /* Placeholder per slot non ancora fotografati */
 .gallery-placeholder {
   display: flex;

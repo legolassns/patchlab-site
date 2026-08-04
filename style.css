@@ -1259,8 +1259,10 @@ h3 { letter-spacing: -0.01em; }
   font-style: italic;
 }
 
-/* figure wrapper: photo-frame + photo-caption */
-figure.has-caption { display: flex; flex-direction: column; }
+/* figure wrapper: photo-frame + photo-caption.
+   margin: 0 annulla il margine di default del browser su <figure> (1em 40px),
+   che altrimenti restringerebbe il fotogramma rispetto allo slot che lo ospita. */
+figure.has-caption { display: flex; flex-direction: column; margin: 0; }
 figure.has-caption .photo-frame { border-radius: var(--radius-md) var(--radius-md) 0 0; }
 
 /* 16j — Quote --------------------------------------------------------------- */

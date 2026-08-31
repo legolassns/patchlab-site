@@ -1,8 +1,10 @@
 # Struttura del sito — PatchLab by Euroricami
 
-> Ultimo aggiornamento: 2026-07-27 (allineato al contenuto reale del repository; le versioni precedenti di questo file erano rimaste indietro rispetto al codice).
+> Ultimo aggiornamento: 2026-08-31 (fondazione tecnica per una terza lingua; le versioni precedenti di questo file erano rimaste indietro rispetto al codice).
 
 Sito statico (HTML + CSS + JS vanilla, nessun framework, nessun build system), una pagina per file. Progetto verticale di Euroricami dedicato esclusivamente alle patch personalizzate. Bilingue: **inglese alla radice**, **italiano sotto `it/`**, parità 1:1 con `hreflang` reciproco.
+
+**Terza lingua (francese): prevista dall'architettura, non pubblicata.** Dal 2026-08-31 il codice condiviso (`main.js`, `api/invia-preventivo.php`, workflow di deploy) regge una terza lingua senza ulteriori refactor. **La cartella `fr/` non esiste, nessuna pagina francese è online, nessun `hreflang="fr"` è dichiarato e il sitemap non contiene URL francesi.** Le route pubbliche restano **30**. Dettaglio dei punti predisposti nella sezione "Predisposizione FR" in fondo.
 
 ## Route reali: 30 (15 EN + 15 IT)
 
@@ -33,6 +35,7 @@ style.css          Foglio di stile unico (design system, token CSS in :root)
 main.js            Menu mobile, link attivo in nav, form preventivo, eventi Plausible
 robots.txt         Consente le route reali, esclude /api/ e gli 8 stub legacy
 sitemap.xml        30 route reali, hreflang reciproco per coppia
+                   (x-default = URL EN dello stesso cluster, vedi Note tecniche)
 api/invia-preventivo.php    Unico endpoint applicativo (invio preventivo via SMTP Zoho)
 vendor/phpmailer/  PHPMailer vendorizzato (nessun Composer)
 assets/img/        Fotografie reali di prodotto + loghi/favicon in assets/img/logo/
@@ -65,7 +68,26 @@ Il workflow di deploy usa una **whitelist esplicita**: la documentazione `.md` n
 - **Il form preventivo è attivo e funzionante**: invia email reali a `info@patchlab.net` via SMTP autenticato Zoho (porta 587/STARTTLS), con honeypot, controllo di timing, rate limiting per IP e validazione whitelist lato server. Le versioni precedenti di questo file lo dichiaravano erroneamente ancora solo lato client.
 - Colori, spaziature e font sono definiti come variabili CSS in cima a `style.css` (`:root`): da lì si modifica la palette in un punto solo.
 - **Misurazione (dal 2026-07-23)**: ogni pagina reale include il tag di Plausible Analytics (cookieless, nessun dato personale) e `main.js` genera gli eventi custom del funnel di conversione. Dettaglio: `docs/PLAUSIBLE_SETUP.md` e `ANALYTICS_MEASUREMENT_PLAN.md`.
+- **`x-default` (uniformato il 2026-08-31)**: punta sempre alla **pagina inglese dello stesso cluster**, non alla home. Prima convivevano due convenzioni — le 8 route di conoscenza/privacy seguivano già questa regola, le altre 22 puntavano tutte a `https://patchlab.net/`. La regola era già quella scritta in `docs/KNOWLEDGE_PLATFORM.md`, ma non era applicata ovunque. Vale identica nei `<head>` e in `sitemap.xml`.
 - **Knowledge Platform (dal 2026-07-27)**: le 6 pagine di conoscenza sono le sole del sito con dati strutturati JSON-LD e sono costruite riusando esclusivamente componenti CSS già esistenti (nessuna riga aggiunta a `style.css`). Regole e checklist di pubblicazione: `docs/KNOWLEDGE_PLATFORM.md`.
+
+## Predisposizione FR (2026-08-31) — architettura pronta, nessun contenuto pubblicato
+
+Interventi eseguiti sul **codice condiviso**, senza creare alcuna pagina francese. Servono a evitare che l'aggiunta di una terza lingua richieda un refactor a valle, quando sarebbe più rischioso.
+
+| Punto | Prima | Ora |
+|---|---|---|
+| `main.js` — lingua corrente | `lang === "en" ? "en" : "it"`: qualunque lingua non inglese diventava "it" | `getCurrentLang()` valida contro `SUPPORTED_LANGUAGES` (`en`/`it`/`fr`) e degrada su `en` |
+| `main.js` — messaggi del form | Ternario a due rami | Lookup `QUOTE_FORM_MESSAGES` a tre chiavi (le stringhe FR sono provvisorie) |
+| `main.js` — messaggio dal server | Mostrato a chiunque non fosse EN | Mostrato solo se la pagina è IT (il server risponde in italiano) |
+| `main.js` — CTA preventivo | `quote/`, `preventivo/` | `quote/`, `preventivo/`, `devis/` |
+| `main.js` — `language_switch` | `to_lang` dedotto per inversione | `to_lang` letto da `hreflang` sul link cliccato; valore ignoto → `unknown` |
+| Switcher EN/IT | Link senza `hreflang` | Link con `hreflang="en"` / `hreflang="it"`. **Visivamente invariato: resta `EN \| IT`** |
+| Form EN/IT | Nessun campo lingua | Campo nascosto `lingua` (`en`/`it`), validato server-side |
+| `api/invia-preventivo.php` | Provenienza fissa `(it/preventivo/)`, falsa per le richieste EN | Riga "Lingua richiesta" nell'email + provenienza derivata; whitelist `LINGUE_AMMESSE` già comprensiva di `fr` |
+| Deploy | Solo `it/` copiata | Blocco condizionale `fr/` speculare: non fa nulla finché la cartella non esiste |
+
+**Non fatto di proposito**: nessuna cartella `fr/`, nessuna pagina FR, nessun `hreflang="fr"`, nessun URL FR nel sitemap, nessuna terza voce nello switcher, nessuna modifica a nav, footer, CSS, immagini o slug.
 
 ## Prossimi passi suggeriti
 

@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://patchlab.net/quote/">
 <link rel="alternate" hreflang="en" href="https://patchlab.net/quote/">
 <link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/">
-<link rel="alternate" hreflang="x-default" href="https://patchlab.net/">
+<link rel="alternate" hreflang="x-default" href="https://patchlab.net/quote/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PatchLab by Euroricami">
 <meta property="og:locale" content="en_GB">
@@ -51,7 +51,7 @@
         <div class="lang-switch" aria-label="Language">
           <span class="lang-current" aria-current="true">EN</span>
           <span class="lang-switch-divider" aria-hidden="true">|</span>
-          <a href="../it/preventivo/" aria-label="Passa all'italiano">IT</a>
+          <a href="../it/preventivo/" hreflang="it" aria-label="Passa all'italiano">IT</a>
         </div>
       </div>
     </div>
@@ -121,6 +121,11 @@
           <input type="text" id="sito-web" name="sito-web" tabindex="-1" autocomplete="off">
         </div>
         <input type="hidden" id="ts-apertura" name="ts_apertura" value="">
+        <!-- Language of the page the request comes from. It tells the team
+             which language to reply in: the endpoint reports it in the
+             internal email. Validated server-side against a closed
+             whitelist (en/it/fr); never used to build headers or queries. -->
+        <input type="hidden" name="lingua" value="en">
 
         <div class="form-field">
           <label for="nome">Full name *</label>

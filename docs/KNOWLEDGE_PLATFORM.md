@@ -38,7 +38,7 @@ Da eseguire **interamente**: saltare un punto produce una pagina che esiste in l
 
 1. **Crea la coppia EN + IT.** Una pagina senza controparte rompe la parità `hreflang` del sito. Se il contenuto per una lingua non è pronto, non pubblicare nemmeno l'altra.
 2. **Copia l'intero `<head>` da una pagina di conoscenza esistente** e adatta: `title`, `description`, `canonical`, i tre `hreflang` (`it`, `en`, `x-default`), gli `og:*`, i percorsi relativi di favicon/CSS.
-   - `x-default` punta sempre alla versione **inglese** (l'inglese è la lingua di default del sito, EN vive alla radice).
+   - `x-default` punta sempre alla pagina **inglese dello stesso cluster** — non alla home del sito (l'inglese è la lingua di default, EN vive alla radice). Le pagine di conoscenza hanno sempre seguito questa regola; dal 2026-08-31 la seguono tutte e 30 le route, uniformando le 22 che puntavano genericamente a `https://patchlab.net/`.
    - Lo snippet Plausible va incluso **integralmente** (entrambi i `<script>`), **una sola volta**, **immediatamente prima di `</head>`**, e **senza** l'attributo `data-domain`. Senza di esso la pagina è invisibile alla misurazione; duplicato, produce due pageview per visita e falsa ogni tasso di conversione. Copialo da una pagina di conoscenza esistente o da `docs/PLAUSIBLE_SETUP.md` §1 — è identico su ogni pagina, a qualunque profondità di percorso, perché l'URL dello script è assoluto:
 
      ```html
@@ -54,7 +54,7 @@ Da eseguire **interamente**: saltare un punto produce una pagina che esiste in l
 3. **Copia header e footer** da una pagina di conoscenza dello stesso livello di profondità (i percorsi relativi cambiano con la profondità: `../`, `../../`, `../../../`) e correggi il link del `lang-switch` verso la controparte nell'altra lingua.
 4. **JSON-LD**: `Article` + `BreadcrumbList` per una guida, `CollectionPage` per un hub, `DefinedTermSet` per un glossario. Riusa il nodo `Organization` con `@id` `https://patchlab.net/#organization` invece di ridefinirlo. Ogni affermazione nel markup deve corrispondere al contenuto visibile della pagina.
 5. **`sitemap.xml`**: aggiungi entrambe le route, ciascuna con i tre `xhtml:link` reciproci.
-6. **Deploy whitelist** — il punto che si dimentica: se la pagina è **inglese**, aggiungi la sua cartella radice a `EN_PAGE_DIRS` in `.github/workflows/deploy-production.yml`. Le sottocartelle di una radice già elencata (es. `guides/nuova-guida/`) sono coperte dalla `cp -r` e non vanno aggiunte. Le pagine **italiane** non richiedono nulla: `it/` è copiata interamente.
+6. **Deploy whitelist** — il punto che si dimentica: se la pagina è **inglese**, aggiungi la sua cartella radice a `EN_PAGE_DIRS` in `.github/workflows/deploy-production.yml`. Le sottocartelle di una radice già elencata (es. `guides/nuova-guida/`) sono coperte dalla `cp -r` e non vanno aggiunte. Le pagine **italiane** non richiedono nulla: `it/` è copiata interamente. Dal 2026-08-31 esiste un blocco condizionale speculare per `fr/`: anch'esso non richiederà nulla quando la cartella verrà creata (oggi non esiste e il blocco è inerte).
 7. **Internal linking minimo** (senza questo la pagina nasce orfana):
    - dall'hub verso la nuova guida;
    - dalla nuova guida verso l'hub, il glossario e almeno una pagina tecnica pertinente;

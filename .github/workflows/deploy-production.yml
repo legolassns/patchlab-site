@@ -151,6 +151,20 @@ jobs:
             cp -r it/. _release/it/
           fi
 
+          # fr/: predisposizione per la futura versione francese, speculare
+          # a it/. La cartella OGGI NON ESISTE e nessuna pagina francese è
+          # pubblicata: il blocco è deliberatamente condizionale, quindi il
+          # deploy si comporta esattamente come prima finché fr/ non viene
+          # creata. Quando esisterà, verrà pubblicata senza toccare questo
+          # workflow — è il punto che si dimentica (docs/KNOWLEDGE_PLATFORM.md).
+          # Nota: a differenza delle pagine inglesi, che vivono in cartelle
+          # di primo livello da elencare una per una in EN_PAGE_DIRS, tutto
+          # ciò che sta sotto fr/ è coperto da questa singola cp -r.
+          if [ -d "fr" ]; then
+            mkdir -p _release/fr
+            cp -r fr/. _release/fr/
+          fi
+
           # Pagine inglesi alla radice (Sprint EN/IT): una cartella per
           # pagina, ciascuna con il proprio index.html, allo stesso modo di
           # it/. Aggiungere qui ogni nuova pagina inglese pubblicata.

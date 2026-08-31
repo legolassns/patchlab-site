@@ -7,6 +7,39 @@ document.addEventListener("DOMContentLoaded", function () {
   initInteractionTracking();
 });
 
+/* Lingue supportate dall'architettura del sito. L'ordine non conta: la
+   lista serve solo a validare il valore letto da <html lang="...">.
+   "fr" è presente perché la logica di questo file deve reggere una terza
+   lingua senza altri interventi — le route /fr/ non esistono ancora e
+   nessuna pagina francese è pubblicata (vedi site-structure.md). */
+var SUPPORTED_LANGUAGES = ["en", "it", "fr"];
+
+/* Lingua della pagina corrente, normalizzata e sempre sicura.
+   Sostituisce la vecchia deduzione binaria (`lang === "en" ? "en" : "it"`),
+   che su qualunque lingua diversa da "en" restituiva "it": con una terza
+   lingua avrebbe attribuito il traffico francese al funnel italiano.
+
+   Il valore viene normalizzato in due passaggi prima del confronto:
+   minuscolo (BCP 47 non è case-sensitive: "EN" e "en" sono la stessa
+   lingua) e taglio al primary language subtag, cioè tutto ciò che precede
+   il primo "-" ("fr-CA" → "fr"). Senza questo, un `lang` regionale
+   perfettamente valido finirebbe nel fallback e verrebbe misurato come
+   inglese: la stessa classe di errore della vecchia logica binaria.
+   Oggi tutte le pagine dichiarano codici puri ("en", "it"), quindi la
+   normalizzazione non cambia nulla di ciò che è online — serve a non
+   introdurre un difetto silenzioso se un domani una pagina dichiarasse
+   "fr-FR".
+
+   Un valore assente, vuoto o non riconosciuto degrada su "en", che è la
+   lingua di default del sito (l'inglese vive alla radice). */
+function getCurrentLang() {
+  var lang = (document.documentElement.lang || "").toLowerCase().split("-")[0];
+  if (SUPPORTED_LANGUAGES.indexOf(lang) === -1) {
+    return "en";
+  }
+  return lang;
+}
+
 /* Invia un evento custom a Plausible (script caricato via <script defer>
    in ogni pagina, vedi docs/PLAUSIBLE_SETUP.md). Silenzioso e senza mai
    generare un errore JS se lo script non è disponibile (blocco pubblicità,
@@ -74,7 +107,11 @@ function highlightActiveNavLink() {
    `return`), quindi non può mai generare due eventi per un solo click. */
 function initInteractionTracking() {
   document.addEventListener("click", function (event) {
-    var quoteLink = event.target.closest('a[href$="quote/"], a[href$="preventivo/"]');
+    /* `devis/` è la route del preventivo francese: non esiste ancora, ma
+       senza questo selettore ogni click su una futura CTA FR non
+       genererebbe alcun evento — una perdita silenziosa del segnale
+       principale del funnel, invisibile in dashboard. */
+    var quoteLink = event.target.closest('a[href$="quote/"], a[href$="preventivo/"], a[href$="devis/"]');
     if (quoteLink) {
       /* Nome deliberatamente diverso da "location" per non ombreggiare
          window.location nello scope di questa funzione (var è hoisted
@@ -91,14 +128,24 @@ function initInteractionTracking() {
       } else if (quoteLink.closest(".site-footer")) {
         ctaLocation = "footer";
       }
-      trackEvent("quote_cta_click", { cta_location: ctaLocation, lang: document.documentElement.lang });
+      trackEvent("quote_cta_click", { cta_location: ctaLocation, lang: getCurrentLang() });
       return;
     }
 
     var langLink = event.target.closest(".lang-switch a");
     if (langLink) {
-      var fromLang = document.documentElement.lang === "en" ? "en" : "it";
-      trackEvent("language_switch", { from_lang: fromLang, to_lang: fromLang === "en" ? "it" : "en" });
+      /* `to_lang` viene letto dall'attributo hreflang del link cliccato,
+         non dedotto invertendo la lingua corrente: con due lingue
+         l'inversione funzionava per caso, con tre sarebbe sempre errata.
+         Un link dello switcher senza hreflang valido produce "unknown"
+         invece di un valore plausibile ma sbagliato: un difetto di markup
+         deve restare visibile in dashboard, non mimetizzarsi in un dato
+         credibile. */
+      var toLang = langLink.getAttribute("hreflang");
+      if (SUPPORTED_LANGUAGES.indexOf(toLang) === -1) {
+        toLang = "unknown";
+      }
+      trackEvent("language_switch", { from_lang: getCurrentLang(), to_lang: toLang });
       return;
     }
 
@@ -113,24 +160,42 @@ function initInteractionTracking() {
    fetch all'endpoint PHP (api/invia-preventivo.php). Il form non si
    considera mai "inviato" finché il server non conferma con { ok: true }.
 
-   L'endpoint PHP risponde sempre in italiano (Sprint EN/IT non tocca la
-   logica server-side): sulla pagina inglese sostituiamo il messaggio di
-   invio/esito con l'equivalente inglese invece di mostrare il testo
-   italiano restituito dal server. */
+   L'endpoint PHP risponde sempre in italiano (la lingua dei messaggi
+   server-side non è stata cambiata): solo sulla pagina italiana mostriamo
+   il testo restituito dal server, in ogni altra lingua usiamo la stringa
+   locale corrispondente. */
+
+/* Messaggi del form, una voce per lingua supportata. Lookup esplicita e
+   non un ternario: aggiungere una lingua qui è l'unica modifica
+   necessaria, e nessuna lingua può più ereditare per sbaglio i testi di
+   un'altra.
+   Le stringhe FR sono provvisorie e vanno riviste con il copy definitivo
+   quando le pagine francesi verranno scritte: oggi non è raggiungibile
+   nessuna pagina con lang="fr". */
+var QUOTE_FORM_MESSAGES = {
+  en: {
+    sending: "Sending…",
+    success: "Thank you, we've received your request. We'll get back to you after reviewing the project.",
+    genericError: "We couldn't send your request. Please try again or email info@patchlab.net."
+  },
+  it: {
+    sending: "Invio in corso…",
+    success: "Grazie, abbiamo ricevuto la tua richiesta. Ti risponderemo dopo aver valutato il progetto.",
+    genericError: "Non siamo riusciti a inviare la richiesta. Puoi riprovare oppure scrivere a info@patchlab.net."
+  },
+  fr: {
+    sending: "Envoi en cours…",
+    success: "Votre demande a bien été envoyée. Nous vous contacterons rapidement.",
+    genericError: "Une erreur s'est produite. Veuillez réessayer ou nous écrire à info@patchlab.net."
+  }
+};
+
 function initQuoteForm() {
   var form = document.getElementById("quote-form");
   if (!form) return;
 
-  var isEnglish = document.documentElement.lang === "en";
-  var i18n = {
-    sending: isEnglish ? "Sending…" : "Invio in corso…",
-    success: isEnglish
-      ? "Thank you, we've received your request. We'll get back to you after reviewing the project."
-      : "Grazie, abbiamo ricevuto la tua richiesta. Ti risponderemo dopo aver valutato il progetto.",
-    genericError: isEnglish
-      ? "We couldn't send your request. Please try again or email info@patchlab.net."
-      : "Non siamo riusciti a inviare la richiesta. Puoi riprovare oppure scrivere a info@patchlab.net."
-  };
+  var currentLang = getCurrentLang();
+  var i18n = QUOTE_FORM_MESSAGES[currentLang];
 
   var feedbackBox = document.getElementById("form-feedback");
   var submitButton = document.getElementById("quote-form-submit");
@@ -139,18 +204,17 @@ function initQuoteForm() {
 
   var submitButtonDefaultText = submitButton ? submitButton.textContent : "";
   var isSubmitting = false;
-  var langProp = isEnglish ? "en" : "it";
 
   /* quote_form_view: una sola volta per caricamento pagina (questa
      funzione stessa gira una sola volta per pagina, protetta dal
      `return` iniziale se #quote-form non esiste). */
-  trackEvent("quote_form_view", { lang: langProp });
+  trackEvent("quote_form_view", { lang: currentLang });
 
   /* quote_form_start: il primo focus su un campo qualunque del form,
      una sola volta per pagina (`{ once: true }` rimuove il listener
      dopo il primo trigger, nessun flag manuale necessario). */
   form.addEventListener("focusin", function () {
-    trackEvent("quote_form_start", { lang: langProp });
+    trackEvent("quote_form_start", { lang: currentLang });
   }, { once: true });
 
   /* Timestamp di apertura del form, usato lato server come controllo
@@ -231,7 +295,7 @@ function initQuoteForm() {
 
     setSubmitting(true);
     clearFeedback();
-    trackEvent("quote_form_submit", { lang: langProp });
+    trackEvent("quote_form_submit", { lang: currentLang });
 
     var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
     var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 15000) : null;
@@ -254,23 +318,29 @@ function initQuoteForm() {
           });
       })
       .then(function (result) {
+        /* Il messaggio restituito dal server è sempre in italiano: lo
+           mostriamo solo sulla pagina italiana. Ogni altra lingua usa la
+           propria stringa locale — prima la condizione era `isEnglish`,
+           quindi qualunque lingua non inglese avrebbe ricevuto testo
+           italiano. */
+        var useServerMessage = currentLang === "it";
         if (result.httpOk && result.data && result.data.ok) {
-          trackEvent("quote_form_success", { lang: langProp });
-          showFeedback("success", isEnglish ? i18n.success : (result.data.message || i18n.success));
+          trackEvent("quote_form_success", { lang: currentLang });
+          showFeedback("success", useServerMessage ? (result.data.message || i18n.success) : i18n.success);
           form.reset();
           if (tsField) tsField.value = String(Date.now());
         } else {
-          trackEvent("quote_form_error", { lang: langProp, error_kind: "server" });
-          var errorMessage = isEnglish
-            ? i18n.genericError
-            : ((result.data && result.data.message) ? result.data.message : i18n.genericError);
+          trackEvent("quote_form_error", { lang: currentLang, error_kind: "server" });
+          var errorMessage = (useServerMessage && result.data && result.data.message)
+            ? result.data.message
+            : i18n.genericError;
           showFeedback("error", errorMessage);
         }
       })
       .catch(function () {
         /* Errore di rete o timeout: il form non viene resettato, i dati
            inseriti restano compilati per un nuovo tentativo. */
-        trackEvent("quote_form_error", { lang: langProp, error_kind: "network" });
+        trackEvent("quote_form_error", { lang: currentLang, error_kind: "network" });
         showFeedback("error", i18n.genericError);
       })
       .finally(function () {

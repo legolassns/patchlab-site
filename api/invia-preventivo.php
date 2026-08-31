@@ -3,7 +3,9 @@
  * Endpoint del modulo preventivo PatchLab.
  *
  * Riceve i dati dal form condiviso da it/preventivo/index.html (IT) e
- * quote/index.html (EN) (fetch POST, FormData) e li inoltra via email a
+ * quote/index.html (EN) — e da una futura pagina francese, già prevista
+ * dalla whitelist LINGUE_AMMESSE senza altre modifiche a questo file —
+ * (fetch POST, FormData) e li inoltra via email a
  * info@patchlab.net tramite SMTP autenticato su Zoho Mail Europa
  * (smtp.zoho.eu:587, STARTTLS — porta/cifratura lette dal file di
  * configurazione esterno, non hardcoded qui), usando PHPMailer ufficiale
@@ -56,6 +58,19 @@ define(
 
 const TIPO_PATCH_AMMESSI = array('ricamata', 'woven-hd', 'pvc', 'sublimatica', 'non-so');
 const APPLICAZIONE_AMMESSE = array('', 'cucibile', 'termosaldabile', 'velcro');
+
+// Lingua di provenienza della richiesta. Whitelist chiusa: qualunque altro
+// valore (assente, vuoto, arbitrario, iniettato) diventa stringa vuota e
+// viene mostrato come "non indicata" nell'email, senza mai far fallire
+// l'invio — la lingua è un'informazione di servizio per il team, non un
+// dato su cui rifiutare un lead reale.
+// Il fallback NON indovina una lingua: una richiesta da una pagina in
+// cache, precedente all'introduzione del campo, deve risultare "non
+// indicata" e non essere attribuita per default all'italiano — sarebbe
+// esattamente l'errore che questo campo serve a eliminare.
+// 'fr' è già ammessa: la route /fr/devis/ non esiste ancora, ma quando
+// esisterà il backend non richiederà alcuna modifica.
+const LINGUE_AMMESSE = array('en', 'it', 'fr');
 
 /**
  * Risponde in JSON con lo status HTTP indicato e termina l'esecuzione.
@@ -189,6 +204,21 @@ function read_note_field()
     }
 
     return $value;
+}
+
+/**
+ * Legge la lingua di provenienza dichiarata dal form.
+ *
+ * A differenza di read_enum_field() non lancia mai: un valore mancante o
+ * non riconosciuto restituisce '' (reso come "non indicata" nell'email).
+ * Una richiesta legittima non deve essere rifiutata per un campo che è
+ * puramente informativo per il team.
+ */
+function read_lingua_field()
+{
+    $value = isset($_POST['lingua']) && is_string($_POST['lingua']) ? trim($_POST['lingua']) : '';
+    $value = strtolower(strip_header_unsafe_chars($value));
+    return in_array($value, LINGUE_AMMESSE, true) ? $value : '';
 }
 
 /**
@@ -388,6 +418,7 @@ try {
     $note = read_note_field();
     $tipoPatch = read_enum_field('tipo-patch', TIPO_PATCH_AMMESSI, true);
     $applicazione = read_enum_field('applicazione', APPLICAZIONE_AMMESSE, false);
+    $lingua = read_lingua_field();
 
     $emailRaw = isset($_POST['email']) && is_string($_POST['email']) ? trim($_POST['email']) : '';
     if (function_exists('mb_strlen') ? mb_strlen($emailRaw, 'UTF-8') > MAX_LEN_EMAIL : strlen($emailRaw) > MAX_LEN_EMAIL) {
@@ -421,8 +452,28 @@ $labelApplicazione = array(
     'velcro' => 'Velcro',
 );
 
+// Etichette leggibili della lingua di provenienza. La stringa vuota copre
+// sia il campo assente sia un valore non riconosciuto: in entrambi i casi
+// la lingua è genuinamente ignota e va dichiarata tale.
+$labelLingua = array(
+    '' => 'non indicata',
+    'en' => 'EN',
+    'it' => 'IT',
+    'fr' => 'FR',
+);
+$linguaLeggibile = $labelLingua[$lingua];
+
+// Provenienza: prima era la stringa fissa "(it/preventivo/)" anche per le
+// richieste inglesi, quindi falsa su metà dei form. Ora deriva dalla
+// lingua effettivamente dichiarata dalla pagina.
+$provenienza = $lingua !== ''
+    ? 'modulo sito PatchLab ' . $linguaLeggibile
+    : 'modulo sito PatchLab (lingua non indicata)';
+
 $nomeOAzienda = $azienda !== '' ? $azienda : $nome;
-$subject = 'Nuova richiesta preventivo PatchLab — ' . $nomeOAzienda;
+// La lingua entra nell'oggetto: il team la vede nella lista dei messaggi,
+// senza dover aprire l'email, e sa subito in che lingua rispondere.
+$subject = 'Nuova richiesta preventivo PatchLab [' . $linguaLeggibile . '] — ' . $nomeOAzienda;
 
 $now = new DateTime('now', new DateTimeZone('Europe/Rome'));
 $dataOra = $now->format('d/m/Y H:i');
@@ -431,6 +482,7 @@ $textLines = array();
 $textLines[] = 'Nuova richiesta di preventivo da patchlab.net';
 $textLines[] = '';
 $textLines[] = 'Data e ora: ' . $dataOra;
+$textLines[] = 'Lingua richiesta: ' . $linguaLeggibile;
 $textLines[] = 'Nome: ' . $nome;
 $textLines[] = 'Azienda/Ente: ' . ($azienda !== '' ? $azienda : '(non indicata)');
 $textLines[] = 'Email: ' . $email;
@@ -443,7 +495,7 @@ $textLines[] = '';
 $textLines[] = 'Descrizione progetto:';
 $textLines[] = ($note !== '' ? $note : '(nessuna nota aggiuntiva)');
 $textLines[] = '';
-$textLines[] = 'Provenienza: modulo sito PatchLab (it/preventivo/).';
+$textLines[] = 'Provenienza: ' . $provenienza . '.';
 $textBody = implode("\n", $textLines);
 
 $escape = function ($value) {
@@ -457,6 +509,7 @@ $htmlBody = '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"></head><
     . '<h2 style="margin:0 0 16px;">Nuova richiesta di preventivo — PatchLab</h2>'
     . '<table cellpadding="6" cellspacing="0" style="border-collapse:collapse;">'
     . '<tr><td><strong>Data e ora</strong></td><td>' . $escape($dataOra) . '</td></tr>'
+    . '<tr><td><strong>Lingua richiesta</strong></td><td>' . $escape($linguaLeggibile) . '</td></tr>'
     . '<tr><td><strong>Nome</strong></td><td>' . $escape($nome) . '</td></tr>'
     . '<tr><td><strong>Azienda/Ente</strong></td><td>' . ($azienda !== '' ? $escape($azienda) : '(non indicata)') . '</td></tr>'
     . '<tr><td><strong>Email</strong></td><td>' . $escape($email) . '</td></tr>'
@@ -467,7 +520,7 @@ $htmlBody = '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"></head><
     . '<tr><td><strong>Data di utilizzo indicativa</strong></td><td>' . ($dataUtilizzo !== '' ? $escape($dataUtilizzo) : '(non indicata)') . '</td></tr>'
     . '</table>'
     . '<p><strong>Descrizione progetto</strong><br>' . $noteHtml . '</p>'
-    . '<p style="color:#7d7f84; font-size:12px;">Provenienza: modulo sito PatchLab (it/preventivo/).</p>'
+    . '<p style="color:#7d7f84; font-size:12px;">Provenienza: ' . $escape($provenienza) . '.</p>'
     . '</body></html>';
 
 try {

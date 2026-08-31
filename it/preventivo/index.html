@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://patchlab.net/it/preventivo/">
 <link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/">
 <link rel="alternate" hreflang="en" href="https://patchlab.net/quote/">
-<link rel="alternate" hreflang="x-default" href="https://patchlab.net/">
+<link rel="alternate" hreflang="x-default" href="https://patchlab.net/quote/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PatchLab by Euroricami">
 <meta property="og:locale" content="it_IT">
@@ -49,7 +49,7 @@
       <div class="header-actions">
         <a href="../preventivo/" class="btn btn-accent header-cta">Richiedi preventivo</a>
         <div class="lang-switch" aria-label="Language">
-          <a href="../../quote/" aria-label="Switch to English">EN</a>
+          <a href="../../quote/" hreflang="en" aria-label="Switch to English">EN</a>
           <span class="lang-switch-divider" aria-hidden="true">|</span>
           <span class="lang-current" aria-current="true">IT</span>
         </div>
@@ -118,6 +118,12 @@
           <input type="text" id="sito-web" name="sito-web" tabindex="-1" autocomplete="off">
         </div>
         <input type="hidden" id="ts-apertura" name="ts_apertura" value="">
+        <!-- Lingua della pagina da cui parte la richiesta. Serve al team
+             per sapere in quale lingua rispondere: l'endpoint la riporta
+             nell'email interna. Valore validato server-side contro una
+             whitelist chiusa (en/it/fr), mai usato per costruire header
+             o query. -->
+        <input type="hidden" name="lingua" value="it">
 
         <div class="form-field">
           <label for="nome">Nome e cognome *</label>

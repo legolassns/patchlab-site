@@ -103,6 +103,7 @@ Whitelist esplicita usata nello step "Prepara `_release/`" (aggiornarla qui e ne
 - `main.js`
 - `assets/` (intera cartella, immagini incluse)
 - `it/` (intera cartella, tutte le pagine italiane)
+- `fr/` (**predisposizione, 2026-08-31**) — blocco condizionale speculare a `it/`, che copia l'intera cartella *solo se esiste*. **Oggi la cartella non esiste e nessuna pagina francese è pubblicata**: il blocco è inerte e il deploy si comporta esattamente come prima. Serve a far sì che, quando la versione francese verrà scritta, non ci sia da ricordarsi di toccare il workflow — è l'errore classico di questa whitelist
 - `api/` (endpoint PHP del modulo preventivo — solo codice, mai credenziali: vedi `FORM_SETUP.md`)
 - `vendor/` (PHPMailer ufficiale vendorizzato — solo codice sorgente e licenza, vedi `FORM_SETUP.md` sezione PHPMailer per provenienza e verifica di integrità)
 - `privacy/` (pagina privacy EN, aggiunta a `EN_PAGE_DIRS` il 2026-07-23 — MODE 6); `it/privacy/` è già inclusa automaticamente dalla copia integrale di `it/`

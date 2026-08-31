@@ -13,7 +13,7 @@ CTA secondaria: Scopri le lavorazioni
 Punti elenco:
 - Nessun minimo d'ordine bloccante
 - Campione di conferma prima della produzione in serie
-- Materiali certificati e controllo qualità interno
+- Materiali selezionati e controllo qualità interno
 
 Immagine: foto reale con tre patch (Futsal Serie A, Polizia Locale Roma Capitale, FC Bari 1908).
 

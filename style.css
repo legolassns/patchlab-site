@@ -1898,8 +1898,29 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
   .gallery-item:nth-child(6) { grid-column: span 4; }
 }
 
-/* --bp-mobile: 780px */
-@media (max-width: 780px) {
+/* --bp-header-nav: 1200px — soglia di passaggio al menu a burger.
+
+   Il valore non è convenzionale: è misurato. L'header desktop non contiene
+   alcun elemento comprimibile — logo, voci di navigazione e CTA sono in
+   white-space: nowrap, CTA e switch linguistico hanno flex-shrink: 0 — quindi
+   la sua larghezza intrinseca è fissa: sotto una certa soglia il contenuto
+   esce dal viewport invece di adattarsi, e la pagina scorre in orizzontale.
+
+   Larghezza minima con header completo e non compresso, misurata su Chrome:
+   FR 1067px, IT 1156px, EN 1160px. L'inglese è la lingua che richiede più
+   spazio e detta quindi la soglia comune a tutte e tre.
+
+   A 1160px esatti il bordo destro dell'header tocca il bordo del viewport:
+   slack zero. Il margine fino a 1200px assorbe la barra di scorrimento
+   classica di Windows (~15-17px, che le misure headless non includono) e le
+   variazioni di resa dei font. Da qui: burger fino a 1199px, navigazione
+   desktop da 1200px.
+
+   Queste regole vivevano nel blocco @media (max-width: 780px) insieme al
+   layout dei contenuti: sono state estratte qui perché solo l'header cambia
+   soglia. Il resto del responsive (hero, form, timeline, griglie) resta a
+   780px, 960px e 560px — invariato. */
+@media (max-width: 1199px) {
   .nav-panel {
     display: none;
     position: absolute;
@@ -1933,7 +1954,10 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
     padding-top: var(--space-16);
     border-top: 1px solid var(--color-border);
   }
+}
 
+/* --bp-mobile: 780px */
+@media (max-width: 780px) {
   .hero-inner { grid-template-columns: 1fr; }
   .hero-media { order: -1; }
   .quote-form { grid-template-columns: 1fr; }

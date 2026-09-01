@@ -7,6 +7,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/"/>
   </url>
   <url>
@@ -14,6 +15,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/"/>
   </url>
   <url>
@@ -21,6 +23,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/"/>
   </url>
 
@@ -29,6 +40,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-embroidered/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-ricamate/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-brodes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-bordados/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-embroidered/"/>
   </url>
   <url>
@@ -36,6 +48,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-embroidered/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-ricamate/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-brodes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-bordados/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-embroidered/"/>
   </url>
   <url>
@@ -43,6 +56,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-embroidered/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-ricamate/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-brodes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-bordados/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-embroidered/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/parches-bordados/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-embroidered/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-ricamate/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-brodes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-bordados/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-embroidered/"/>
   </url>
 
@@ -51,6 +73,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-woven/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-woven/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-tisses/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-tejidos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-woven/"/>
   </url>
   <url>
@@ -58,6 +81,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-woven/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-woven/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-tisses/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-tejidos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-woven/"/>
   </url>
   <url>
@@ -65,6 +89,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-woven/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-woven/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-tisses/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-tejidos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-woven/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/parches-tejidos/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-woven/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-woven/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-tisses/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-tejidos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-woven/"/>
   </url>
 
@@ -73,6 +106,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-pvc/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-pvc/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-pvc/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-pvc/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-pvc/"/>
   </url>
   <url>
@@ -80,6 +114,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-pvc/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-pvc/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-pvc/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-pvc/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-pvc/"/>
   </url>
   <url>
@@ -87,6 +122,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-pvc/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-pvc/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-pvc/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-pvc/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-pvc/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/parches-pvc/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-pvc/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-pvc/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-pvc/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-pvc/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-pvc/"/>
   </url>
 
@@ -95,6 +139,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-sublimated/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-sublimatiche/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-sublimes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-sublimados/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-sublimated/"/>
   </url>
   <url>
@@ -102,6 +147,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-sublimated/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-sublimatiche/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-sublimes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-sublimados/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-sublimated/"/>
   </url>
   <url>
@@ -109,6 +155,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-sublimated/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-sublimatiche/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-sublimes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-sublimados/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-sublimated/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/parches-sublimados/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-sublimated/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-sublimatiche/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-sublimes/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-sublimados/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-sublimated/"/>
   </url>
 
@@ -117,6 +172,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-hook-and-loop/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-velcro/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-velcro/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-velcro/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-hook-and-loop/"/>
   </url>
   <url>
@@ -124,6 +180,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-hook-and-loop/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-velcro/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-velcro/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-velcro/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-hook-and-loop/"/>
   </url>
   <url>
@@ -131,6 +188,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-hook-and-loop/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-velcro/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-velcro/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-velcro/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-hook-and-loop/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/parches-velcro/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-hook-and-loop/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-velcro/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-velcro/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-velcro/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-hook-and-loop/"/>
   </url>
 
@@ -139,6 +205,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-iron-on/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-termosaldabili/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-thermocollants/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-termoadhesivos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-iron-on/"/>
   </url>
   <url>
@@ -146,6 +213,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-iron-on/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-termosaldabili/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-thermocollants/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-termoadhesivos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-iron-on/"/>
   </url>
   <url>
@@ -153,6 +221,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-iron-on/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-termosaldabili/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-thermocollants/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-termoadhesivos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-iron-on/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/parches-termoadhesivos/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/patch-iron-on/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/patch-termosaldabili/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/ecussons-thermocollants/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/parches-termoadhesivos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/patch-iron-on/"/>
   </url>
 
@@ -161,6 +238,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/portfolio/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/portfolio/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/realisations/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/trabajos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/portfolio/"/>
   </url>
   <url>
@@ -168,6 +246,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/portfolio/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/portfolio/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/realisations/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/trabajos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/portfolio/"/>
   </url>
   <url>
@@ -175,6 +254,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/portfolio/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/portfolio/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/realisations/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/trabajos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/portfolio/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/trabajos/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/portfolio/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/portfolio/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/realisations/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/trabajos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/portfolio/"/>
   </url>
 
@@ -183,6 +271,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/how-we-work/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/come-lavoriamo/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/notre-methode/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/como-trabajamos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/how-we-work/"/>
   </url>
   <url>
@@ -190,6 +279,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/how-we-work/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/come-lavoriamo/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/notre-methode/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/como-trabajamos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/how-we-work/"/>
   </url>
   <url>
@@ -197,6 +287,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/how-we-work/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/come-lavoriamo/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/notre-methode/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/como-trabajamos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/how-we-work/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/como-trabajamos/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/how-we-work/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/come-lavoriamo/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/notre-methode/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/como-trabajamos/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/how-we-work/"/>
   </url>
 
@@ -205,6 +304,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/laboratory/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/laboratorio/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/atelier/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/taller/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/laboratory/"/>
   </url>
   <url>
@@ -212,6 +312,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/laboratory/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/laboratorio/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/atelier/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/taller/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/laboratory/"/>
   </url>
   <url>
@@ -219,6 +320,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/laboratory/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/laboratorio/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/atelier/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/taller/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/laboratory/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/taller/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/laboratory/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/laboratorio/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/atelier/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/taller/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/laboratory/"/>
   </url>
 
@@ -227,6 +337,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/quote/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/devis/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/presupuesto/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/quote/"/>
   </url>
   <url>
@@ -234,6 +345,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/quote/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/devis/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/presupuesto/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/quote/"/>
   </url>
   <url>
@@ -241,6 +353,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/quote/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/devis/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/presupuesto/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/quote/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/presupuesto/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/quote/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/preventivo/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/devis/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/presupuesto/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/quote/"/>
   </url>
 
@@ -289,6 +410,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/privacy/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/privacy/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/confidentialite/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/privacidad/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/privacy/"/>
   </url>
   <url>
@@ -296,6 +418,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/privacy/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/privacy/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/confidentialite/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/privacidad/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/privacy/"/>
   </url>
   <url>
@@ -303,6 +426,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/privacy/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/privacy/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/confidentialite/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/privacidad/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/privacy/"/>
+  </url>
+  <url>
+    <loc>https://patchlab.net/es/privacidad/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://patchlab.net/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://patchlab.net/it/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://patchlab.net/fr/confidentialite/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://patchlab.net/es/privacidad/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://patchlab.net/privacy/"/>
   </url>
 

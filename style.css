@@ -1956,6 +1956,14 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
   }
 }
 
+/* Complemento di --bp-header-nav: da 1200px la navigazione desktop e lo
+   switcher a quattro lingue condividono la stessa riga da 1160px. I divider
+   sono decorativi (gia' aria-hidden) e costano ~29px: nasconderli qui
+   restituisce il margine senza toccare container, breakpoint o tipografia. */
+@media (min-width: 1200px) {
+  .lang-switch-divider { display: none; }
+}
+
 /* --bp-mobile: 780px */
 @media (max-width: 780px) {
   .hero-inner { grid-template-columns: 1fr; }

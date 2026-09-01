@@ -9,10 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* Lingue supportate dall'architettura del sito. L'ordine non conta: la
    lista serve solo a validare il valore letto da <html lang="...">.
-   "fr" è presente perché la logica di questo file deve reggere una terza
-   lingua senza altri interventi — le route /fr/ non esistono ancora e
-   nessuna pagina francese è pubblicata (vedi site-structure.md). */
-var SUPPORTED_LANGUAGES = ["en", "it", "fr"];
+   EN, IT e FR sono pubblicate. "es" è presente perché la logica di questo
+   file deve reggere una quarta lingua senza altri interventi: le route
+   /es/ non esistono ancora e nessuna pagina spagnola è pubblicata
+   (vedi site-structure.md). */
+var SUPPORTED_LANGUAGES = ["en", "it", "fr", "es"];
 
 /* Lingua della pagina corrente, normalizzata e sempre sicura.
    Sostituisce la vecchia deduzione binaria (`lang === "en" ? "en" : "it"`),
@@ -107,11 +108,12 @@ function highlightActiveNavLink() {
    `return`), quindi non può mai generare due eventi per un solo click. */
 function initInteractionTracking() {
   document.addEventListener("click", function (event) {
-    /* `devis/` è la route del preventivo francese: non esiste ancora, ma
-       senza questo selettore ogni click su una futura CTA FR non
-       genererebbe alcun evento — una perdita silenziosa del segnale
-       principale del funnel, invisibile in dashboard. */
-    var quoteLink = event.target.closest('a[href$="quote/"], a[href$="preventivo/"], a[href$="devis/"]');
+    /* Una voce per lingua: `quote/` EN, `preventivo/` IT, `devis/` FR e
+       `presupuesto/` ES. Quest'ultima route non esiste ancora, ma senza il
+       selettore ogni click su una futura CTA spagnola non genererebbe
+       alcun evento — una perdita silenziosa del segnale principale del
+       funnel, invisibile in dashboard. */
+    var quoteLink = event.target.closest('a[href$="quote/"], a[href$="preventivo/"], a[href$="devis/"], a[href$="presupuesto/"]');
     if (quoteLink) {
       /* Nome deliberatamente diverso da "location" per non ombreggiare
          window.location nello scope di questa funzione (var è hoisted
@@ -169,9 +171,9 @@ function initInteractionTracking() {
    non un ternario: aggiungere una lingua qui è l'unica modifica
    necessaria, e nessuna lingua può più ereditare per sbaglio i testi di
    un'altra.
-   Le stringhe FR sono provvisorie e vanno riviste con il copy definitivo
-   quando le pagine francesi verranno scritte: oggi non è raggiungibile
-   nessuna pagina con lang="fr". */
+   Le stringhe ES sono provvisorie e vanno riviste con il copy definitivo
+   quando le pagine spagnole verranno scritte: oggi non è raggiungibile
+   nessuna pagina con lang="es". */
 var QUOTE_FORM_MESSAGES = {
   en: {
     sending: "Sending…",
@@ -187,6 +189,11 @@ var QUOTE_FORM_MESSAGES = {
     sending: "Envoi en cours…",
     success: "Votre demande a bien été envoyée. Nous vous contacterons rapidement.",
     genericError: "Une erreur s'est produite. Veuillez réessayer ou nous écrire à info@patchlab.net."
+  },
+  es: {
+    sending: "Enviando…",
+    success: "Tu solicitud se ha enviado correctamente. Nos pondremos en contacto contigo lo antes posible.",
+    genericError: "Se ha producido un error. Inténtalo de nuevo o escríbenos a info@patchlab.net."
   }
 };
 

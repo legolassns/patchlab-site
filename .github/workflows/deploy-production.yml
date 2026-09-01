@@ -165,6 +165,17 @@ jobs:
             cp -r fr/. _release/fr/
           fi
 
+          # es/: predisposizione per la futura versione spagnola, speculare a
+          # it/ e fr/. La cartella OGGI NON ESISTE e nessuna pagina spagnola è
+          # pubblicata: il blocco è deliberatamente condizionale, quindi il
+          # deploy si comporta esattamente come prima finché es/ non viene
+          # creata. Quando esisterà, verrà pubblicata senza toccare questo
+          # workflow — è il punto che si dimentica (docs/KNOWLEDGE_PLATFORM.md).
+          if [ -d "es" ]; then
+            mkdir -p _release/es
+            cp -r es/. _release/es/
+          fi
+
           # Pagine inglesi alla radice (Sprint EN/IT): una cartella per
           # pagina, ciascuna con il proprio index.html, allo stesso modo di
           # it/. Aggiungere qui ogni nuova pagina inglese pubblicata.

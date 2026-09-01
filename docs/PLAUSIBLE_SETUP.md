@@ -12,7 +12,7 @@ Decisione a monte (non presa qui): Plausible è stato scelto dalla direzione dop
 
 ## 1. Cos'è stato installato
 
-Uno **snippet unico, identico su tutte le 30 route reali** del sito. È lo snippet ufficiale fornito da Plausible al momento della registrazione del sito, e sostituisce integralmente l'integrazione precedente — un singolo tag `<script defer>` che caricava il file generico di Plausible e identificava il sito con l'attributo `data-domain`. Quel tag **non è più presente in nessun file del repository**.
+Uno **snippet unico, identico su tutte le 42 route reali** del sito. È lo snippet ufficiale fornito da Plausible al momento della registrazione del sito, e sostituisce integralmente l'integrazione precedente — un singolo tag `<script defer>` che caricava il file generico di Plausible e identificava il sito con l'attributo `data-domain`. Quel tag **non è più presente in nessun file del repository**.
 
 ```html
 <!-- Privacy-friendly analytics by Plausible -->
@@ -83,7 +83,7 @@ Tutta la logica è in `main.js` (nessuna dipendenza esterna, nessun bundler):
 
 ## 4. Cosa NON è mai inviato a Plausible
 
-Vincolo assoluto, verificato riga per riga in `main.js` durante questo intervento: nessuna chiamata a `trackEvent()` referenzia mai `nome`, `azienda`, `email`, `telefono`, `note`, il contenuto di `tipo-patch`/`applicazione`/`quantita`, o l'indirizzo IP del visitatore. Gli unici valori passati come `props` in tutto il codice sono: `lang`/`from_lang`/`to_lang` (`"en"`/`"it"`/`"fr"`, più `"unknown"` per il solo `to_lang` se il link dello switcher è privo di `hreflang` valido — vedi `ANALYTICS_MEASUREMENT_PLAN.md`, sezione "Lingua negli eventi"; `"fr"` è previsto dal codice ma non ancora osservabile, nessuna pagina francese è pubblicata), `cta_location` (una stringa fissa tra `header`/`hero`/`mid-page`/`final-cta`/`footer`/`other`), `error_kind` (`"server"`/`"network"`), `path` (solo per `mailto_click`, il percorso della pagina — mai un dato del visitatore). Nessun valore proviene da un campo del form.
+Vincolo assoluto, verificato riga per riga in `main.js` durante questo intervento: nessuna chiamata a `trackEvent()` referenzia mai `nome`, `azienda`, `email`, `telefono`, `note`, il contenuto di `tipo-patch`/`applicazione`/`quantita`, o l'indirizzo IP del visitatore. Gli unici valori passati come `props` in tutto il codice sono: `lang`/`from_lang`/`to_lang` (`"en"`/`"it"`/`"fr"`/`"es"`, più `"unknown"` per il solo `to_lang` se il link dello switcher è privo di `hreflang` valido — vedi `ANALYTICS_MEASUREMENT_PLAN.md`, sezione "Lingua negli eventi"; `"es"` è previsto dal codice ma non ancora osservabile, nessuna pagina spagnola è pubblicata), `cta_location` (una stringa fissa tra `header`/`hero`/`mid-page`/`final-cta`/`footer`/`other`), `error_kind` (`"server"`/`"network"`), `path` (solo per `mailto_click`, il percorso della pagina — mai un dato del visitatore). Nessun valore proviene da un campo del form.
 
 ## 5. Manutenzione
 
@@ -92,7 +92,7 @@ Vincolo assoluto, verificato riga per riga in `main.js` durante questo intervent
 - **Lo snippet NON va aggiunto** alle pagine di redirect legacy (`patch-pvc.html` e affini in root): §1.1, regola 4.
 - **Non aggiungere `data-domain`**: §1.1, regola 3. Il sito è identificato dall'ID nel nome del file.
 - **Non riusare questo snippet su un altro sito**: l'ID è specifico di `patchlab.net`; su un dominio diverso attribuirebbe quel traffico a PatchLab. Un nuovo sito richiede uno snippet nuovo generato da Plausible.
-- **Rotazione verso self-hosted**: se in futuro si migrasse da Plausible Cloud a un'istanza self-hosted, servirebbe rigenerare lo snippet dall'istanza e sostituirlo su tutte e 30 le pagine (stesso meccanismo di ricerca-e-sostituzione già usato in questo intervento), non una semplice modifica dell'URL.
+- **Rotazione verso self-hosted**: se in futuro si migrasse da Plausible Cloud a un'istanza self-hosted, servirebbe rigenerare lo snippet dall'istanza e sostituirlo su tutte e 42 le pagine (stesso meccanismo di ricerca-e-sostituzione già usato in questo intervento), non una semplice modifica dell'URL.
 - **Verifica automatica dopo qualunque modifica allo snippet**: controllare su tutte le route reali che l'ID del sito compaia **una sola volta**, che `plausible.init()` compaia **una sola volta**, che lo snippet sia **immediatamente prima di `</head>`**, e che non esista alcun residuo del vecchio file generico di Plausible né dell'attributo `data-domain`.
 
 ## 6. Copertura KPI — verifica onesta, nessun workaround inventato
@@ -109,7 +109,7 @@ Verifica di ciascun KPI proposto in `PATCHLAB_MEASUREMENT_STRATEGY.md` (reposito
 | CTA Click-Through Rate per posizione | **Sì, con un limite di piano** | `quote_cta_click` con prop `cta_location` è implementato e funzionante; la *scomposizione* per valore di proprietà personalizzata (vedere il breakdown per `header` vs `hero` vs `mid-page` vs `final-cta` nella dashboard) è disponibile nei piani Plausible con supporto alle "custom properties" (non nel piano Community/free più essenziale) — da verificare al momento della scelta del piano |
 | Trend pre/post modifica | **Sì, pienamente** | Nessun limite: è un confronto temporale sullo stesso KPI aggregato, che Plausible mostra nativamente per intervallo di date; la correlazione con i deploy avviene tramite la Deployment Timeline (repository `euroricami-ai-os`, `observability/deployment-timeline/`), non tramite Plausible stesso |
 | Proxy efficacia foto | Sì, pienamente | Stesso meccanismo del trend pre/post — era già definito come proxy, non come misura diretta |
-| LCR per lingua | **Sì, pienamente** | Le pagine EN e IT vivono su percorsi distinti (root vs `/it/...`); Plausible segmenta nativamente per URL, nessuna proprietà custom necessaria. Vale identico per una futura terza lingua sotto `/fr/...`: nessuna configurazione da aggiungere |
+| LCR per lingua | **Sì, pienamente** | Le pagine EN, IT e FR vivono su percorsi distinti (root, `/it/...`, `/fr/...`); Plausible segmenta nativamente per URL, nessuna proprietà custom necessaria. Vale identico per una futura quarta lingua sotto `/es/...`: nessuna configurazione da aggiungere |
 | Mix di canale | **Sì, pienamente** | Plausible traccia nativamente i referrer/le sorgenti di traffico (funzionalità core, non un add-on) |
 | Device split | **Sì, pienamente** | Plausible traccia nativamente il tipo di dispositivo (funzionalità core) |
 

@@ -68,9 +68,10 @@ const APPLICAZIONE_AMMESSE = array('', 'cucibile', 'termosaldabile', 'velcro');
 // cache, precedente all'introduzione del campo, deve risultare "non
 // indicata" e non essere attribuita per default all'italiano — sarebbe
 // esattamente l'errore che questo campo serve a eliminare.
-// 'fr' è già ammessa: la route /fr/devis/ non esiste ancora, ma quando
-// esisterà il backend non richiederà alcuna modifica.
-const LINGUE_AMMESSE = array('en', 'it', 'fr');
+// EN, IT e FR sono pubblicate. 'es' è già ammessa: la route /es/presupuesto/
+// non esiste ancora, ma quando esisterà il backend non richiederà alcuna
+// modifica.
+const LINGUE_AMMESSE = array('en', 'it', 'fr', 'es');
 
 /**
  * Risponde in JSON con lo status HTTP indicato e termina l'esecuzione.
@@ -460,6 +461,7 @@ $labelLingua = array(
     'en' => 'EN',
     'it' => 'IT',
     'fr' => 'FR',
+    'es' => 'ES',
 );
 $linguaLeggibile = $labelLingua[$lingua];
 

@@ -30,7 +30,7 @@ Pubblicate 6 pagine, 3 coppie EN↔IT:
 | Pillar 1 — scelta della lavorazione | `it/guide/scegliere-la-patch-giusta/index.html` | `guides/choosing-the-right-patch/index.html` |
 | Glossario (34 voci) | `it/glossario/index.html` | `glossary/index.html` |
 
-Route reali totali del sito: **30** (erano 24). Vedi `sitemap.xml`.
+Route reali totali del sito: **42** (15 EN + 15 IT + 12 FR; erano 30 prima della release FR v1.1). Vedi `sitemap.xml`.
 
 ## 3. Checklist obbligatoria per ogni nuova pagina di conoscenza
 

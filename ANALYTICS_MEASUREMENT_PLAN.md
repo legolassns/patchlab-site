@@ -4,7 +4,7 @@ Questo documento resta nel repository ma **non viene mai pubblicato online**: è
 
 ## Stato: IMPLEMENTATO (Plausible Analytics)
 
-**Plausible Analytics** è integrato su tutte le **30 route reali** del sito. Dal 2026-07-27 lo snippet installato è quello ufficiale generato da Plausible alla registrazione del sito:
+**Plausible Analytics** è integrato su tutte le **42 route reali** del sito (15 EN + 15 IT + 12 FR). Dal 2026-07-27 lo snippet installato è quello ufficiale generato da Plausible alla registrazione del sito:
 
 ```html
 <!-- Privacy-friendly analytics by Plausible -->
@@ -42,8 +42,8 @@ La pagina di origine **non è quasi mai passata come parametro custom**: Plausib
 
 | Evento | Trigger | Pagina | Parametri effettivi (`props`) | Dati vietati | Finalità | Priorità | Stato | Implementazione |
 |---|---|---|---|---|---|---|---|---|
-| `page_view` | Caricamento di qualunque pagina reale | Tutte (30) | Nessuno — evento **nativo** di Plausible, non un `plausible()` custom | Tutti quelli sopra | Misurare traffico e provenienza per pagina/lingua (lingua desumibile dal path: root = EN, `/it/...` = IT, e in futuro `/fr/...` = FR) | Alta | **implemented** | Solo lo snippet in ogni `<head>` (il pageview è attivato da `plausible.init()`); nessun codice in `main.js` |
-| `quote_cta_click` | Click su un link verso `quote/`, `preventivo/` o `devis/` (delega su `document`) | Tutte le pagine con CTA | `cta_location` (`header`, `hero`, `mid-page`, `final-cta`, `footer`, `other`), `lang` | Tutti quelli sopra | Capire quali punti di ingresso generano più intenzione di conversione | Alta | **implemented** | `main.js`, `initInteractionTracking()` |
+| `page_view` | Caricamento di qualunque pagina reale | Tutte (42) | Nessuno — evento **nativo** di Plausible, non un `plausible()` custom | Tutti quelli sopra | Misurare traffico e provenienza per pagina/lingua (lingua desumibile dal path: root = EN, `/it/...` = IT, `/fr/...` = FR, e in futuro `/es/...` = ES) | Alta | **implemented** | Solo lo snippet in ogni `<head>` (il pageview è attivato da `plausible.init()`); nessun codice in `main.js` |
+| `quote_cta_click` | Click su un link verso `quote/`, `preventivo/`, `devis/` o `presupuesto/` (delega su `document`) | Tutte le pagine con CTA | `cta_location` (`header`, `hero`, `mid-page`, `final-cta`, `footer`, `other`), `lang` | Tutti quelli sopra | Capire quali punti di ingresso generano più intenzione di conversione | Alta | **implemented** | `main.js`, `initInteractionTracking()` |
 | `quote_form_view` | Caricamento di `/quote/` o `/it/preventivo/` | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Base per il tasso di conversione del form (view → submit) | Alta | **implemented** | `main.js`, inizio di `initQuoteForm()` |
 | `quote_form_start` | Primo `focusin` su un campo qualunque del form | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra | Distinguere chi vede il form da chi inizia davvero a compilarlo | Media | **implemented** | `main.js`, `initQuoteForm()`, listener `{ once: true }` |
 | `quote_form_submit` | `submit` del form **dopo** la validazione client, **prima** della risposta del server (tentativo reale di invio) | `quote/`, `it/preventivo/` | `lang` | Tutti quelli sopra, incluso qualunque campo del form | Misurare i tentativi di invio, incluso chi fallisce dopo | Alta | **implemented** | `main.js`, `initQuoteForm()`, dopo `setSubmitting(true)` |
@@ -54,11 +54,11 @@ La pagina di origine **non è quasi mai passata come parametro custom**: Plausib
 
 ## Lingua negli eventi (aggiornato 2026-08-31)
 
-`lang`, `from_lang` e `to_lang` valgono `"en"`, `"it"` o `"fr"`. Fino al 2026-08-31 la lingua era dedotta con un ternario binario (`lang === "en" ? "en" : "it"`): qualunque valore diverso da `"en"` veniva riportato come `"it"`. Con una terza lingua questo non avrebbe perso dati — li avrebbe **misattribuiti**, sommando silenziosamente il funnel francese a quello italiano, senza alcun segnale d'errore in dashboard. Ora `getCurrentLang()` valida `document.documentElement.lang` contro l'elenco delle lingue supportate e degrada su `"en"` solo se il valore è assente o non riconosciuto.
+`lang`, `from_lang` e `to_lang` valgono `"en"`, `"it"`, `"fr"` o `"es"`. Fino al 2026-08-31 la lingua era dedotta con un ternario binario (`lang === "en" ? "en" : "it"`): qualunque valore diverso da `"en"` veniva riportato come `"it"`. Con una terza lingua questo non avrebbe perso dati — li avrebbe **misattribuiti**, sommando silenziosamente il funnel francese a quello italiano, senza alcun segnale d'errore in dashboard. Ora `getCurrentLang()` valida `document.documentElement.lang` contro l'elenco delle lingue supportate e degrada su `"en"` solo se il valore è assente o non riconosciuto.
 
 `to_lang` di `language_switch` non è più dedotto per inversione ma letto dall'attributo `hreflang` del link cliccato; un link privo di `hreflang` valido produce `"unknown"`, così un difetto di markup resta visibile invece di mimetizzarsi in un valore plausibile.
 
-**`"fr"` è già ammesso nel codice ma oggi non può comparire in dashboard**: nessuna pagina francese è pubblicata. Se un evento con `lang: "fr"` apparisse ora, indicherebbe un errore, non traffico reale.
+`"fr"` è pubblicato dal 2026-08-31 e compare regolarmente in dashboard. **`"es"` è già ammesso nel codice (dal 2026-09-01) ma oggi non può comparire**: nessuna pagina spagnola è pubblicata. Se un evento con `lang: "es"` apparisse ora, indicherebbe un errore, non traffico reale.
 
 ## Cosa questo piano NON copre
 

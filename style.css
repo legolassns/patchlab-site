@@ -1967,8 +1967,19 @@ section .eyebrow + h2 { margin-top: var(--space-8); }
 /* --bp-mobile: 780px */
 @media (max-width: 780px) {
   .hero-inner { grid-template-columns: 1fr; }
-  .hero-media { order: -1; }
+  /* La foto hero resta nell'ordine del DOM, cioè dopo H1, CTA e hero-points:
+     su mobile la CTA primaria deve stare nel primo schermo. Il padding
+     superiore ridotto serve allo stesso scopo: su un telefono reale le barre
+     del browser lasciano visibile meno dell'altezza nominale dello schermo. */
+  .hero { padding-top: var(--space-48); }
   .quote-form { grid-template-columns: 1fr; }
+
+  /* Pagine preventivo: su mobile il form precede la checklist. Il DOM non
+     cambia (desktop invariato): cambia solo l'ordine visivo delle sezioni. */
+  .quote-page { display: flex; flex-direction: column; }
+  .quote-page > .quote-page-form { order: 1; }
+  .quote-page > .quote-page-intro { order: 2; }
+  .quote-page > .section-light { order: 3; }
   .riordino-inner { grid-template-columns: 1fr; }
   .riordino-inner .photo-frame { order: -1; }
 
